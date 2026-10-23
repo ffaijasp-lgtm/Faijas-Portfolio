@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-color: #000000;
+    --text-color: #ffffff;
+    --brand-yellow: #FFDE00;
+  }
+
+  html, body {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100%;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Unbounded', 'Syne', sans-serif;
+  }
+}
+
+/* Film strip marquee style header bar */
+.film-banner {
+  background-color: #FFDE00;
+  color: #000000;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Cinematic film frame aesthetic */
+.film-border {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.yellow-border {
+  border: 1px solid rgba(255, 222, 0, 0.3);
+}
+
+.yellow-border-hover:hover {
+  border-color: #FFDE00;
+}
+
+/* Cinematic film strip perforated border */
+.film-perforations {
+  background-image: radial-gradient(circle, #000000 35%, transparent 40%);
+  background-size: 16px 16px;
+  background-repeat: repeat-x;
+}
+
+/* Subtle glow */
+.yellow-glow {
+  box-shadow: 0 0 35px -5px rgba(255, 222, 0, 0.25);
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
