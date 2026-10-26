@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { siteConfig } from '../../js/data/site';
-import portraitImg from '../../assets/images/portrait.webp';
+import portraitImg from '../../assets/images/me.jpg';
 import { Languages } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
