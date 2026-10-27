@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { siteConfig } from '../../js/data/site';
-import portraitImg from '../../assets/images/me.jpg';
+import portraitImg from '../../assets/images/me.png';
 import { Languages } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -88,7 +88,7 @@ export default function About() {
                 CREATIVE PROFILE
               </span>
               <h2 id="about-heading" className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tighter font-display leading-tight">
-                ABOUT FAIJAS P
+                ABOUT
               </h2>
             </div>
 

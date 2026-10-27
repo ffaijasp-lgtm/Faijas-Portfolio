@@ -45,7 +45,7 @@ export default function ContactSection() {
           
           <div className="contact-element inline-flex items-center gap-2 px-3.5 py-1 bg-zinc-900 border border-zinc-800 text-xs font-mono uppercase tracking-widest text-[#FFDE00] font-bold">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>COMMISSION / INQUIRIES</span>
+            <span>CONTACT &bull; INQUIRIES</span>
           </div>
 
           <h2 id="contact-heading" className="contact-element text-3xl sm:text-6xl md:text-7xl font-black text-white uppercase tracking-tighter font-display leading-[1.0]">

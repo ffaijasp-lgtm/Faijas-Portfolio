@@ -33,21 +33,21 @@ export default function VideoModal({ video, onClose }) {
         className="relative w-full max-w-5xl bg-zinc-950 border-2 border-[#FFDE00] shadow-2xl overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between px-4 py-2.5 bg-black border-b border-zinc-800 text-xs font-mono">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 bg-red-500 animate-pulse" />
-            <span id="video-modal-title" className="text-white font-bold font-display uppercase tracking-wide truncate max-w-xs sm:max-w-md">
+        <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 bg-black border-b border-zinc-800 text-xs font-mono gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="w-2.5 h-2.5 bg-red-500 animate-pulse shrink-0" />
+            <span id="video-modal-title" className="text-white font-bold font-display uppercase tracking-wide truncate text-xs sm:text-sm">
               {video.title}
             </span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-900 hover:bg-[#FFDE00] text-zinc-300 hover:text-black transition-colors uppercase font-mono text-[11px] font-bold"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FFDE00] text-black hover:bg-[#FFE838] transition-colors uppercase font-mono text-xs font-black shrink-0 shadow-md active:scale-95"
             aria-label="Close video player"
           >
             <span>CLOSE</span>
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4 stroke-[3]" />
           </button>
         </div>
 

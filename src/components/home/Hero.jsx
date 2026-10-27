@@ -54,12 +54,12 @@ export default function Hero({ onOpenVideo }) {
             <span>{siteConfig.status}</span>
           </div>
 
-          <h1 className="hero-headline-line text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-[0.95] font-display">
+          <h1 className="hero-headline-line text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black uppercase tracking-tighter leading-[1.02] sm:leading-[0.95] font-display break-words">
             <span className="block text-white">
               DIGITAL MARKETING.
             </span>
             <span className="block text-[#FFDE00] mt-2">
-              AI CONTENT DIRECTION.
+              AI CONTENT CREATOR.
             </span>
           </h1>
 
@@ -88,18 +88,18 @@ export default function Hero({ onOpenVideo }) {
 
         <div className="hero-visual-card relative rounded-none p-2 sm:p-4 bg-zinc-950 border-2 border-zinc-800">
           
-          <div className="flex items-center justify-between px-3 py-2 border-b border-zinc-800 text-[10px] font-mono text-zinc-400 uppercase tracking-widest mb-3">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between px-3 py-2 border-b border-zinc-800 text-[10px] font-mono text-zinc-400 uppercase tracking-widest mb-3 gap-2">
+            <div className="flex items-center gap-1.5 shrink-0">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-              <span className="text-white font-bold">AI VIDEO SHOWCASE</span>
+              <span className="text-white font-bold">AI VIDEO</span>
             </div>
-            <div>CAPCUT &bull; PROMPTING &bull; CAMPAIGN</div>
-            <div className="text-[#FFDE00] font-bold">CLICK TO STREAM</div>
+            <div className="hidden sm:block truncate text-center">CAPCUT &bull; PROMPTING &bull; CAMPAIGN</div>
+            <div className="text-[#FFDE00] font-bold shrink-0">CLICK TO STREAM</div>
           </div>
 
           <div 
             onClick={() => onOpenVideo && onOpenVideo(featuredVideoProject)}
-            className="relative aspect-[16/9] sm:aspect-[21/9] overflow-hidden bg-zinc-900 border border-zinc-800 group cursor-pointer"
+            className="relative aspect-[16/10] sm:aspect-[21/9] overflow-hidden bg-zinc-900 border border-zinc-800 group cursor-pointer"
           >
             <img
               src={featuredVideoProject.thumbnail}
@@ -110,21 +110,21 @@ export default function Hero({ onOpenVideo }) {
               height="800"
             />
             
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
-            <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between">
-              <div className="space-y-0.5">
-                <span className="text-[10px] font-mono tracking-widest text-[#FFDE00] uppercase font-bold">
+            <div className="absolute bottom-3 left-3 right-3 sm:bottom-5 sm:left-5 sm:right-5 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+              <div className="space-y-0.5 max-w-md">
+                <span className="text-[9px] sm:text-[10px] font-mono tracking-widest text-[#FFDE00] uppercase font-bold block">
                   PROMOTIONAL CASE 01
                 </span>
-                <h3 className="text-white font-display font-black text-base sm:text-2xl uppercase tracking-tight">
+                <h3 className="text-white font-display font-black text-sm sm:text-xl md:text-2xl uppercase tracking-tight line-clamp-2 sm:line-clamp-none">
                   {featuredVideoProject.title}
                 </h3>
               </div>
               
               <button 
                 type="button"
-                className="px-4 py-2 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-xs uppercase tracking-wider flex items-center gap-2 transition-transform group-hover:scale-105 shadow-xl"
+                className="self-start sm:self-auto px-3.5 py-2 sm:px-4 sm:py-2 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-[11px] sm:text-xs uppercase tracking-wider flex items-center gap-1.5 transition-transform group-hover:scale-105 shadow-xl shrink-0"
               >
                 <span>STREAM REEL</span>
                 <Play className="w-3.5 h-3.5 fill-current" />
@@ -132,16 +132,16 @@ export default function Hero({ onOpenVideo }) {
             </div>
           </div>
 
-          <div className="mt-3 pt-2 border-t border-zinc-800 flex flex-wrap items-center justify-between text-[11px] font-mono text-zinc-400 gap-4">
+          <div className="mt-3 pt-2 border-t border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center justify-between text-[11px] font-mono text-zinc-400 gap-2 sm:gap-4">
             <div className="flex items-center gap-2">
-              <MapPin className="w-3.5 h-3.5 text-[#FFDE00]" />
+              <MapPin className="w-3.5 h-3.5 text-[#FFDE00] shrink-0" />
               <span>{siteConfig.location}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#FFDE00]" />
-              <span>AI Video &amp; Image Direction</span>
+              <Sparkles className="w-3.5 h-3.5 text-[#FFDE00] shrink-0" />
+              <span>AI Video &amp; Image Creation</span>
             </div>
-            <div className="flex items-center gap-2 text-white font-bold">
+            <div className="text-white font-bold">
               <span>META ADS &bull; GOOGLE ADS &bull; SEO</span>
             </div>
           </div>

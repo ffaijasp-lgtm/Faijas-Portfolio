@@ -137,7 +137,7 @@ export default function Navbar() {
             onClick={handleContactClick}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-xs uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-md shadow-[#FFDE00]/15"
           >
-            <span>COMMISSION / CONTACT</span>
+            <span>CONTACT</span>
             <ArrowUpRight className="w-3.5 h-3.5 stroke-[3]" />
           </a>
         </div>
@@ -214,7 +214,7 @@ export default function Navbar() {
               onClick={handleContactClick}
               className="flex items-center justify-center gap-2 w-full py-3 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-xs uppercase tracking-wider transition-colors"
             >
-              <span>COMMISSION / CONTACT</span>
+              <span>CONTACT</span>
               <ArrowUpRight className="w-4 h-4 stroke-[3]" />
             </a>
           </div>
