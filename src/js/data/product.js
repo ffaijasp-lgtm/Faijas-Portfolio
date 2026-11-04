@@ -18,7 +18,7 @@ export const projects = [
     title: "AI-Assisted Short-Form Video Concepts",
     category: "AI Video",
     description: "Short-form promotional video concepts created using AI-generated visual generation workflows, edited, paced, and finalized in CapCut for multi-platform social media delivery.",
-    thumbnail:https://res.cloudinary.com/drluy0mqi/image/upload/v1793764964/Woman_character_reference_sheet___68464720_2K.jpg,
+    thumbnail://res.cloudinary.com/drluy0mqi/image/upload/v1793764964/Woman_character_reference_sheet___68464720_2K.jpg,
     previewVideo: null,
     youtubeId: "SH11-LZmZP0",
     year: "2026",
