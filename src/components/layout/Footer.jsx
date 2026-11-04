@@ -16,9 +16,6 @@ export default function Footer() {
         
         <div className="space-y-3 max-w-sm">
           <div className="flex items-center gap-2.5">
-            <div className="px-2.5 py-1 bg-[#FFDE00] text-black font-display font-black text-sm">
-              FP
-            </div>
             <span className="text-white font-display font-black text-lg tracking-tight uppercase">
               {siteConfig.name}
             </span>

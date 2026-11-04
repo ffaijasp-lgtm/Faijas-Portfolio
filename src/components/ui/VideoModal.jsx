@@ -1,42 +1,45 @@
-import React, { useEffect } from 'react';
-import { X } from 'lucide-react';
+import React, { useEffect } from "react";
+import { X } from "lucide-react";
 
 export default function VideoModal({ video, onClose }) {
   useEffect(() => {
     if (!video) return;
 
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
-    window.addEventListener('keydown', handleKeyDown);
-    
+    window.addEventListener("keydown", handleKeyDown);
+
     const origOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = origOverflow || 'auto';
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = origOverflow || "auto";
     };
   }, [video, onClose]);
 
   if (!video) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/90 backdrop-blur-md animate-in fade-in duration-200"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="video-modal-title"
     >
-      <div 
+      <div
         className="relative w-full max-w-5xl bg-zinc-950 border-2 border-[#FFDE00] shadow-2xl overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 bg-black border-b border-zinc-800 text-xs font-mono gap-3">
           <div className="flex items-center gap-2 min-w-0">
             <span className="w-2.5 h-2.5 bg-red-500 animate-pulse shrink-0" />
-            <span id="video-modal-title" className="text-white font-bold font-display uppercase tracking-wide truncate text-xs sm:text-sm">
+            <span
+              id="video-modal-title"
+              className="text-white font-bold font-display uppercase tracking-wide truncate text-xs sm:text-sm"
+            >
               {video.title}
             </span>
           </div>
@@ -54,16 +57,21 @@ export default function VideoModal({ video, onClose }) {
         <div className="relative aspect-video w-full bg-black">
           {video.youtubeId ? (
             <iframe
-              src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?autoplay=1&rel=0&modestbranding=1`}
+              src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?autoplay=1&rel=0&modestbranding=1&vq=hd1080&hd=1&playsinline=1`}
               title={video.title}
               className="w-full h-full border-0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
             />
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 p-8 text-center space-y-2">
-              <span className="text-sm font-mono uppercase text-[#FFDE00]">NO DIRECT YOUTUBE STREAM ATTACHED</span>
-              <p className="text-xs text-zinc-500 max-w-sm">Configure a youtubeId in src/js/data/product.js to stream directly.</p>
+              <span className="text-sm font-mono uppercase text-[#FFDE00]">
+                NO DIRECT YOUTUBE STREAM ATTACHED
+              </span>
+              <p className="text-xs text-zinc-500 max-w-sm">
+                Configure a youtubeId in src/js/data/project.js to stream
+                directly.
+              </p>
             </div>
           )}
         </div>
@@ -77,7 +85,10 @@ export default function VideoModal({ video, onClose }) {
           </div>
           <div className="flex flex-wrap gap-1.5 shrink-0">
             {video.tools?.map((tool, idx) => (
-              <span key={idx} className="text-[10px] font-mono px-2 py-0.5 bg-zinc-900 text-zinc-400 border border-zinc-800 uppercase">
+              <span
+                key={idx}
+                className="text-[10px] font-mono px-2 py-0.5 bg-zinc-900 text-zinc-400 border border-zinc-800 uppercase"
+              >
                 {tool}
               </span>
             ))}

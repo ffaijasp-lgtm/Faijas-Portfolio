@@ -6,9 +6,14 @@ import paidAds from '../../assets/images/paid-ads.webp';
 import xenMedia from '../../assets/images/xen-media.webp';
 
 /**
- * Product & Project data source.
- * Images are imported directly from src/assets/images.
- * To update videos, replace youtubeId with any YouTube Video ID or null.
+ * Project data source.
+ * 
+ * Thumbnail support:
+ * - Direct imported local image asset (e.g. `import myImage from '../../assets/images/...'`)
+ * - Cloudinary or any external HTTPS image URL (e.g. `"https://res.cloudinary.com/demo/image/upload/sample.jpg"`)
+ * 
+ * Video support:
+ * - youtubeId: YouTube Video ID string (plays automatically in maximum HD resolution in modal) or null
  */
 
 export const projects = [

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { projects, projectCategories } from '../js/data/product';
+import { projects, projectCategories } from '../js/data/project';
 import { siteConfig } from '../js/data/site';
 import ProjectFilters from '../components/projects/ProjectFilters';
 import ProjectGrid from '../components/projects/ProjectGrid';

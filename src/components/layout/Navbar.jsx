@@ -67,9 +67,6 @@ export default function Navbar() {
           className="group flex items-center gap-2.5 text-white transition-colors"
           aria-label="Faijas P — Home"
         >
-          <div className="px-2.5 py-1 bg-[#FFDE00] text-black font-display font-black text-sm tracking-tighter">
-            FP
-          </div>
           <div>
             <span className="font-display font-black tracking-tighter text-base sm:text-lg block leading-none text-white group-hover:text-[#FFDE00] transition-colors uppercase">
               {siteConfig.name}

@@ -1,13 +1,29 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { siteConfig } from '../../js/data/site';
-import { projects } from '../../js/data/product';
-import { ArrowUpRight, Play, MapPin, Sparkles } from 'lucide-react';
+import { projects } from '../../js/data/project';
+import resumeFile from '../../assets/docs/Resume.pdf';
+import { ArrowUpRight, FileDown, MapPin, Sparkles, Volume2, VolumeX } from 'lucide-react';
 import gsap from 'gsap';
 
 export default function Hero({ onOpenVideo }) {
   const containerRef = useRef(null);
+  const videoRef = useRef(null);
   const featuredVideoProject = projects[0];
+  const [isMuted, setIsMuted] = useState(true);
+
+  // High quality sample public MP4 showcase reel
+  // To use your local video, place it in src/assets/video/ and import it or point to it here
+  const videoSrc = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+
+  const toggleSound = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(videoRef.current.muted);
+    } else {
+      setIsMuted(!isMuted);
+    }
+  };
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -56,7 +72,7 @@ export default function Hero({ onOpenVideo }) {
 
           <h1 className="hero-headline-line text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black uppercase tracking-tighter leading-[1.02] sm:leading-[0.95] font-display break-words">
             <span className="block text-white">
-              DIGITAL MARKETING.
+              DIGITAL MARKETER.
             </span>
             <span className="block text-[#FFDE00] mt-2">
               AI CONTENT CREATOR.
@@ -77,10 +93,14 @@ export default function Hero({ onOpenVideo }) {
             </Link>
 
             <a
-              href="#contact"
+              href={resumeFile}
+              download="Faijas_P_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-4 bg-transparent hover:bg-white/[0.08] text-white font-display font-black text-xs sm:text-sm uppercase tracking-wider border-2 border-white/20 hover:border-[#FFDE00] hover:text-[#FFDE00] transition-all duration-200 active:scale-95"
             >
-              <span>DIRECT INQUIRY</span>
+              <FileDown className="w-4 h-4 text-[#FFDE00]" />
+              <span>GET RESUME</span>
             </a>
           </div>
 
@@ -91,31 +111,44 @@ export default function Hero({ onOpenVideo }) {
           <div className="flex items-center justify-between px-3 py-2 border-b border-zinc-800 text-[10px] font-mono text-zinc-400 uppercase tracking-widest mb-3 gap-2">
             <div className="flex items-center gap-1.5 shrink-0">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-              <span className="text-white font-bold">AI VIDEO</span>
+              <span className="text-white font-bold">FEATURED WORK SHOWCASE</span>
             </div>
-            <div className="hidden sm:block truncate text-center">CAPCUT &bull; PROMPTING &bull; CAMPAIGN</div>
-            <div className="text-[#FFDE00] font-bold shrink-0">CLICK TO STREAM</div>
+            <div className="hidden sm:block truncate text-center">AI VISUALS &bull; MOTION DIRECTION &bull; CAMPAIGN</div>
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={toggleSound}
+                className="flex items-center gap-1 text-zinc-300 hover:text-[#FFDE00] transition-colors"
+                aria-label={isMuted ? "Unmute video" : "Mute video"}
+              >
+                {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-[#FFDE00]" />}
+                <span className="text-[10px] font-mono">{isMuted ? "MUTED" : "SOUND ON"}</span>
+              </button>
+            </div>
           </div>
 
           <div 
             onClick={() => onOpenVideo && onOpenVideo(featuredVideoProject)}
-            className="relative aspect-[16/10] sm:aspect-[21/9] overflow-hidden bg-zinc-900 border border-zinc-800 group cursor-pointer"
+            className="relative aspect-[16/10] sm:aspect-[21/9] overflow-hidden bg-black border border-zinc-800 group cursor-pointer"
           >
-            <img
-              src={featuredVideoProject.thumbnail}
-              alt="AI Video Concepts & Digital Marketing Direction Preview"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              loading="eager"
-              width="1200"
-              height="800"
+            {/* HTML5 Native Video Stream: Smooth autoplay, loop, hidden native controls, muted */}
+            <video
+              ref={videoRef}
+              src={videoSrc}
+              poster={featuredVideoProject.thumbnail}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover"
             />
             
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
 
-            <div className="absolute bottom-3 left-3 right-3 sm:bottom-5 sm:left-5 sm:right-5 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div className="absolute bottom-3 left-3 right-3 sm:bottom-5 sm:left-5 sm:right-5 flex flex-col sm:flex-row sm:items-end justify-between gap-3 pointer-events-auto">
               <div className="space-y-0.5 max-w-md">
                 <span className="text-[9px] sm:text-[10px] font-mono tracking-widest text-[#FFDE00] uppercase font-bold block">
-                  PROMOTIONAL CASE 01
+                  FEATURED WORK REEL
                 </span>
                 <h3 className="text-white font-display font-black text-sm sm:text-xl md:text-2xl uppercase tracking-tight line-clamp-2 sm:line-clamp-none">
                   {featuredVideoProject.title}
@@ -124,10 +157,14 @@ export default function Hero({ onOpenVideo }) {
               
               <button 
                 type="button"
-                className="self-start sm:self-auto px-3.5 py-2 sm:px-4 sm:py-2 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-[11px] sm:text-xs uppercase tracking-wider flex items-center gap-1.5 transition-transform group-hover:scale-105 shadow-xl shrink-0"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenVideo && onOpenVideo(featuredVideoProject);
+                }}
+                className="self-start sm:self-auto px-4 py-2 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-[11px] sm:text-xs uppercase tracking-wider flex items-center gap-1.5 transition-transform group-hover:scale-105 shadow-xl shrink-0"
               >
-                <span>STREAM REEL</span>
-                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>EXPAND VIEW</span>
+                <ArrowUpRight className="w-4 h-4 stroke-[3]" />
               </button>
             </div>
           </div>

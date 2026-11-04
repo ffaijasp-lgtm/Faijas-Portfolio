@@ -62,18 +62,14 @@ export default function Expertise() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {siteConfig.skills.map((skillGroup, index) => {
             const Icon = iconMap[skillGroup.category] || Megaphone;
-            
-            // Grid layout: first 3 cards take 2 columns each (3 x 2 = 6 on md/lg),
-            // bottom 2 cards take 3 columns each (2 x 3 = 6 on md/lg)
-            const colSpanClass = index < 3 ? 'md:col-span-3 lg:col-span-2' : 'md:col-span-3 lg:col-span-3';
 
             return (
               <div 
                 key={index}
-                className={`expertise-card p-7 bg-zinc-950 border border-zinc-800 hover:border-[#FFDE00] transition-all duration-300 flex flex-col justify-between group ${colSpanClass}`}
+                className="w-full expertise-card p-7 bg-zinc-950 border border-zinc-800 hover:border-[#FFDE00] transition-all duration-300 flex flex-col justify-between group"
               >
                 <div>
                   <div className="w-12 h-12 bg-black border border-zinc-800 text-[#FFDE00] flex items-center justify-center mb-6 group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
@@ -93,7 +89,7 @@ export default function Expertise() {
                   <h4 className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 mb-3 font-bold">
                     DELIVERABLES / SKILLS
                   </h4>
-                  <ul className={`font-sans ${index >= 3 ? 'grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-3' : 'space-y-2'}`}>
+                  <ul className="space-y-2 font-sans">
                     {skillGroup.items.map((item, itemIdx) => (
                       <li key={itemIdx} className="flex items-center gap-2 text-xs text-zinc-300 font-medium">
                         <span className="w-1.5 h-1.5 bg-[#FFDE00] shrink-0" />

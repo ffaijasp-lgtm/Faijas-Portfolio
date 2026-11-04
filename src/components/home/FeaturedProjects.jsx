@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { projects } from '../../js/data/product';
+import { projects } from '../../js/data/project';
 import { ArrowUpRight, Sparkles, Play } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
