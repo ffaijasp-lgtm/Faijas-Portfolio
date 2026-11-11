@@ -4,23 +4,25 @@
 
 @layer base {
   :root {
-    --bg-color: #000000;
-    --text-color: #ffffff;
+    --bg-color: #070707;
+    --text-color: #f5f5f5;
     --brand-yellow: #FFDE00;
+    --brand-dark: #070707;
+    --brand-card: #0d0d0d;
+    --brand-border: rgba(255, 255, 255, 0.08);
   }
 
   html, body {
-    background-color: #000000;
-    color: #ffffff;
+    background-color: #070707;
+    color: #f5f5f5;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
     overflow-y: auto;
     height: auto;
     min-height: 100%;
-    /* Hide scrollbar for Chrome, Safari and Opera */
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   html::-webkit-scrollbar,
@@ -32,7 +34,7 @@
     background: transparent !important;
   }
 
-  /* Force yellow background and black text on all text selections */
+  /* Electric yellow selection highlight */
   ::selection {
     background-color: #FFDE00 !important;
     color: #000000 !important;
@@ -48,40 +50,26 @@
   }
 }
 
-/* Film strip marquee style header bar */
-.film-banner {
-  background-color: #FFDE00;
-  color: #000000;
-  font-family: 'Unbounded', sans-serif;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+/* Editorial subtle text stroke */
+.text-stroke-subtle {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.25);
+  color: transparent;
 }
 
-/* Cinematic film frame aesthetic */
-.film-border {
-  border: 1px solid rgba(255, 255, 255, 0.12);
+.text-stroke-yellow {
+  -webkit-text-stroke: 1.5px #FFDE00;
+  color: transparent;
 }
 
-.yellow-border {
-  border: 1px solid rgba(255, 222, 0, 0.3);
+/* Editorial Card Glow */
+.editorial-card-glow {
+  box-shadow: 0 0 50px -10px rgba(0, 0, 0, 0.9), 0 0 30px -15px rgba(255, 222, 0, 0.15);
 }
 
-.yellow-border-hover:hover {
-  border-color: #FFDE00;
-}
-
-/* Cinematic film strip perforated border */
-.film-perforations {
-  background-image: radial-gradient(circle, #000000 35%, transparent 40%);
-  background-size: 16px 16px;
-  background-repeat: repeat-x;
-}
-
-/* Subtle glow */
-.yellow-glow {
-  box-shadow: 0 0 35px -5px rgba(255, 222, 0, 0.25);
+/* Stack Card Sticky Styles */
+.stack-card {
+  will-change: transform, opacity;
+  transform-origin: center top;
 }
 
 /* Reduced motion preference */

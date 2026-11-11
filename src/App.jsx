@@ -4,6 +4,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import Index from './pages/Index';
 import Projects from './pages/Projects';
+import CustomCursor from './components/ui/CustomCursor';
 
 export default function App() {
   const { pathname, hash } = useLocation();
@@ -22,7 +23,8 @@ export default function App() {
   }, [pathname, hash]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white selection:bg-[#FFDE00] selection:text-black">
+    <div className="min-h-screen flex flex-col bg-[#070707] text-white selection:bg-[#FFDE00] selection:text-black">
+      <CustomCursor />
       <a 
         href="#main-content" 
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#FFDE00] focus:text-black focus:font-black focus:outline-none"

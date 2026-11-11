@@ -3,16 +3,18 @@ import { Link } from 'react-router-dom';
 import { siteConfig } from '../../js/data/site';
 import { projects } from '../../js/data/project';
 import resumeFile from '../../assets/docs/Resume.pdf';
-import { ArrowUpRight, FileDown, Volume2, VolumeX } from 'lucide-react';
+import { ArrowUpRight, FileDown, Volume2, VolumeX, Sparkles, Film } from 'lucide-react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero({ onOpenVideo }) {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
+  const showcaseCardRef = useRef(null);
   const [isMuted, setIsMuted] = useState(true);
 
-  // Dedicated hero showcase video data (independent from projects array)
-  // You can point to a file in src/assets/video/ or any public/Cloudinary video link
   const showcaseVideo = siteConfig.heroVideo || {
     title: "AI Video Concepts & Promotional Reel",
     description: "Short-form promotional video showcase created using generative AI visual workflows and motion editing.",
@@ -43,63 +45,101 @@ export default function Hero({ onOpenVideo }) {
     if (prefersReducedMotion || !containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo('.hero-badge', 
+      // Hero Entrance Timeline
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      tl.fromTo('.hero-meta-badge',
         { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
-      );
-      gsap.fromTo('.hero-headline-line', 
+        { y: 0, opacity: 1, duration: 0.8, delay: 0.1 }
+      )
+      .fromTo('.hero-title-line',
+        { y: 60, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, stagger: 0.15 },
+        "-=0.6"
+      )
+      .fromTo('.hero-description',
         { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out', delay: 0.1 }
-      );
-      gsap.fromTo('.hero-subtext', 
+        { y: 0, opacity: 1, duration: 0.8 },
+        "-=0.6"
+      )
+      .fromTo('.hero-cta-btn',
         { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: 0.3 }
+        { y: 0, opacity: 1, duration: 0.7, stagger: 0.1 },
+        "-=0.5"
+      )
+      .fromTo('.hero-showcase-container',
+        { y: 40, opacity: 0, scale: 0.98 },
+        { y: 0, opacity: 1, scale: 1, duration: 1.1 },
+        "-=0.7"
       );
-      gsap.fromTo('.hero-cta-group', 
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: 0.4 }
-      );
-      gsap.fromTo('.hero-visual-card', 
-        { scale: 0.96, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.9, ease: 'power3.out', delay: 0.2 }
-      );
+
+      // Subtle parallax on the showcase video reel
+      if (showcaseCardRef.current) {
+        gsap.to('.hero-video-element', {
+          yPercent: 12,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: showcaseCardRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          }
+        });
+      }
     }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section 
+    <section
+      id="hero"
       ref={containerRef}
-      className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden bg-black"
+      className="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden bg-[#070707]"
       aria-label="Introduction and Hero"
     >
+      {/* Background ambient radial glow */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#FFDE00]/5 rounded-full blur-[140px] pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
         
-        <div className="text-center max-w-5xl mx-auto space-y-6 mb-12">
-          
-          <div className="hero-badge inline-flex items-center gap-2 px-3.5 py-1 bg-zinc-900 border border-zinc-800 text-[11px] font-mono uppercase tracking-widest text-[#FFDE00]">
-            <span className="w-2 h-2 bg-[#FFDE00] animate-pulse" />
-            <span>{siteConfig.status}</span>
+        {/* Top Editorial Index Bar */}
+        <div className="flex flex-wrap items-center justify-between text-[10px] font-mono uppercase tracking-widest text-zinc-400 mb-8 pb-4 border-b border-white/[0.08] gap-4">
+          <div className="hero-meta-badge flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#FFDE00] animate-pulse" />
+            <span className="text-white font-bold">{siteConfig.status}</span>
           </div>
+          <div className="hidden sm:flex items-center gap-6 text-zinc-400">
+            <span>(01 / EDITORIAL REEL)</span>
+            <span>&bull;</span>
+            <span>{siteConfig.location}</span>
+            <span>&bull;</span>
+            <span>&copy; {new Date().getFullYear()}</span>
+          </div>
+        </div>
 
-          <h1 className="hero-headline-line text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black uppercase tracking-tighter leading-[1.02] sm:leading-[0.95] font-display break-words">
-            <span className="block text-white">
+        {/* Hero Headline */}
+        <div className="max-w-5xl mx-auto text-center space-y-6 mb-12">
+          
+          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black uppercase tracking-tighter leading-[0.95] sm:leading-[0.9] font-display">
+            <span className="hero-title-line block text-white">
               DIGITAL MARKETER.
             </span>
-            <span className="block text-[#FFDE00] mt-2">
+            <span className="hero-title-line block text-[#FFDE00] mt-1 sm:mt-2">
               AI CONTENT CREATOR.
             </span>
           </h1>
 
-          <p className="hero-subtext text-base sm:text-xl text-zinc-300 max-w-2xl mx-auto font-normal leading-relaxed font-sans">
-            I am <strong className="text-white font-bold">{siteConfig.name}</strong>, combining performance marketing, SEO, and cinematic generative AI workflows to create standout promotional campaigns.
+          <p className="hero-description text-base sm:text-xl text-zinc-300 max-w-2xl mx-auto font-normal leading-relaxed font-sans">
+            I am <strong className="text-white font-semibold">{siteConfig.name}</strong>. Bridging high-velocity generative AI visuals, performance marketing campaigns, and technical SEO architecture.
           </p>
 
-          <div className="hero-cta-group flex flex-wrap items-center justify-center gap-4 pt-2">
+          {/* CTA Action Row */}
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Link
               to="/projects"
-              className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-xl shadow-[#FFDE00]/20 group"
+              data-cursor="explore"
+              className="hero-cta-btn inline-flex items-center gap-2 px-8 py-4 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 rounded-none shadow-xl shadow-[#FFDE00]/20 group active:scale-95"
             >
               <span>EXPLORE WORK ({projects.length})</span>
               <ArrowUpRight className="w-4 h-4 stroke-[3] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -110,7 +150,8 @@ export default function Hero({ onOpenVideo }) {
               download="Faijas_P_Resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-transparent hover:bg-white/[0.08] text-white font-display font-black text-xs sm:text-sm uppercase tracking-wider border-2 border-white/20 hover:border-[#FFDE00] hover:text-[#FFDE00] transition-all duration-200 active:scale-95"
+              data-cursor="pdf"
+              className="hero-cta-btn inline-flex items-center gap-2 px-8 py-4 bg-transparent hover:bg-white/[0.08] text-white font-display font-black text-xs sm:text-sm uppercase tracking-wider border border-white/20 hover:border-[#FFDE00] hover:text-[#FFDE00] transition-all duration-300 active:scale-95"
             >
               <FileDown className="w-4 h-4 text-[#FFDE00]" />
               <span>GET RESUME</span>
@@ -119,52 +160,94 @@ export default function Hero({ onOpenVideo }) {
 
         </div>
 
-        {/* Video Reel Frame */}
-        <div className="hero-visual-card relative rounded-none p-2 sm:p-3 bg-zinc-950 border-2 border-[#FFDE00]/40 hover:border-[#FFDE00] transition-colors duration-300">
-          
-          <div 
+        {/* Cinematic Video Showcase Reel Frame */}
+        <div
+          ref={showcaseCardRef}
+          className="hero-showcase-container relative p-2 sm:p-3 bg-[#0d0d0d] border border-white/10 hover:border-[#FFDE00]/80 transition-colors duration-500 rounded-sm editorial-card-glow"
+        >
+          {/* Top Frame Status Bar */}
+          <div className="flex items-center justify-between px-3 py-2 border-b border-white/[0.06] text-[10px] font-mono text-zinc-400 uppercase tracking-widest mb-2 gap-2">
+            <div className="flex items-center gap-2">
+              <Film className="w-3.5 h-3.5 text-[#FFDE00]" />
+              <span className="text-white font-bold">{showcaseVideo.title}</span>
+            </div>
+            
+            <div className="hidden md:flex items-center gap-3 text-zinc-400">
+              <span className="px-2 py-0.5 bg-black border border-white/10 text-white text-[9px]">
+                {showcaseVideo.category}
+              </span>
+              <span>4K / HIGH DENSITY</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={toggleSound}
+                className="flex items-center gap-1.5 px-2.5 py-1 bg-black/80 hover:bg-[#FFDE00] hover:text-black border border-white/15 text-zinc-300 transition-colors text-[10px] font-mono uppercase font-bold"
+                aria-label={isMuted ? "Unmute video" : "Mute video"}
+              >
+                {isMuted ? <VolumeX className="w-3 h-3 text-zinc-400" /> : <Volume2 className="w-3 h-3 text-[#FFDE00]" />}
+                <span>{isMuted ? "MUTED" : "SOUND ON"}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Interactive Video Box */}
+          <div
             onClick={handleOpenShowcase}
-            className="relative aspect-[16/10] sm:aspect-[21/9] overflow-hidden bg-black border border-zinc-800 group cursor-pointer"
+            data-cursor="play"
+            className="relative aspect-[16/10] sm:aspect-[21/9] overflow-hidden bg-black border border-white/[0.06] group cursor-pointer"
           >
-            {/* HTML5 Native Video: Autoplay, loop, muted, no default controls in unclicked state */}
             <video
               ref={videoRef}
               src={showcaseVideo.src}
+              poster={projects[0]?.thumbnail}
               autoPlay
               muted={isMuted}
               loop
               playsInline
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+              crossOrigin="anonymous"
+              className="hero-video-element w-full h-[115%] -top-[7.5%] relative object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
 
-            {/* Floating Sound Toggle inside the frame */}
-            <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 pointer-events-auto">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/20 pointer-events-none" />
+
+            {/* Bottom Expand View Trigger */}
+            <div className="absolute bottom-4 right-4 z-20 pointer-events-auto">
               <button
-                type="button"
-                onClick={toggleSound}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-black/85 hover:bg-[#FFDE00] text-zinc-300 hover:text-black border border-[#FFDE00]/40 transition-all font-mono text-[10px] uppercase font-bold tracking-wider backdrop-blur-sm"
-                aria-label={isMuted ? "Unmute video" : "Mute video"}
-              >
-                {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-[#FFDE00] group-hover:text-black" />}
-                <span>{isMuted ? "MUTED" : "SOUND ON"}</span>
-              </button>
-            </div>
-
-            {/* Bottom action bar */}
-            <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-20 pointer-events-auto">
-              <button 
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleOpenShowcase();
                 }}
-                className="px-4 py-2 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-[11px] sm:text-xs uppercase tracking-wider flex items-center gap-1.5 transition-transform group-hover:scale-105 shadow-xl"
+                className="px-5 py-2.5 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-xs uppercase tracking-wider flex items-center gap-2 transition-transform group-hover:scale-105 shadow-2xl active:scale-95"
               >
-                <span>EXPAND VIEW</span>
+                <span>EXPAND SHOWCASE</span>
                 <ArrowUpRight className="w-4 h-4 stroke-[3]" />
               </button>
+            </div>
+
+            {/* Bottom Left Quick Information */}
+            <div className="absolute bottom-4 left-4 z-20 pointer-events-none hidden sm:block">
+              <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-300 uppercase bg-black/70 px-3 py-1.5 border border-white/10 backdrop-blur-md">
+                <Sparkles className="w-3 h-3 text-[#FFDE00]" />
+                <span>CLICK TO STREAM AT MAXIMUM BITRATE</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Metatags */}
+          <div className="mt-2.5 pt-2 border-t border-white/[0.06] flex flex-wrap items-center justify-between text-[10px] font-mono text-zinc-400 gap-2">
+            <div className="flex items-center gap-3">
+              <span>TOOLS:</span>
+              {showcaseVideo.tools?.map((tool, tIdx) => (
+                <span key={tIdx} className="text-white bg-zinc-900 px-2 py-0.5 border border-zinc-800">
+                  {tool}
+                </span>
+              ))}
+            </div>
+            <div className="text-[#FFDE00] font-bold">
+              EST. 2026 &bull; SULTHAN BATHERY, WAYANAD
             </div>
           </div>
 

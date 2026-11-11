@@ -62,40 +62,46 @@ export default function Projects() {
   }, [activeCategory]);
 
   return (
-    <main id="main-content" className="pt-28 pb-32 min-h-screen bg-black">
+    <main id="main-content" className="pt-28 pb-36 min-h-screen bg-[#070707] text-white">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         
+        {/* Back Link */}
         <div className="mb-8">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-zinc-400 hover:text-[#FFDE00] transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-400 hover:text-[#FFDE00] transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>&larr; BACK TO OVERVIEW</span>
           </Link>
         </div>
 
-        <header className="max-w-3xl space-y-4 mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900 border border-zinc-800 text-[10px] font-mono uppercase tracking-widest text-[#FFDE00] font-bold">
+        {/* Editorial Archive Header */}
+        <header className="max-w-4xl space-y-4 mb-14 pb-8 border-b border-white/10">
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#FFDE00] font-bold">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>ARCHIVE CATALOGUE</span>
+            <span>CATALOGUE ARCHIVE &bull; EDITORIAL WORKS</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-black text-white uppercase tracking-tighter font-display leading-tight">
-            SELECTED WORKS &bull; <span className="text-[#FFDE00]">AI CONCEPTS</span>
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tighter font-display leading-[0.95]">
+            SELECTED WORKS &bull; <br />
+            <span className="text-[#FFDE00]">AI CONCEPTS.</span>
           </h1>
 
-          <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-sans">
-            An editorial archive exploring short-form AI video generation, social ad creative direction, SEO structural audits, and digital marketing implementations.
+          <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-sans font-light max-w-2xl">
+            An editorial showcase exploring short-form AI video generation, social ad creative direction, SEO structural audits, and digital marketing implementations.
           </p>
 
-          <div className="flex items-center gap-2 text-xs text-zinc-400 pt-2 font-mono">
+          <div className="flex items-center gap-3 text-xs text-zinc-400 pt-2 font-mono">
             <Layers className="w-4 h-4 text-[#FFDE00]" />
-            <span>TOTAL PROJECTS CATALOGUED: {projects.length}</span>
+            <span>TOTAL WORKS CATALOGUED: {projects.length}</span>
+            <span>&bull;</span>
+            <span>SULTHAN BATHERY, WAYANAD</span>
           </div>
         </header>
 
-        <div className="mb-12 pb-6 border-b border-zinc-800">
+        {/* Filter Navigation */}
+        <div className="mb-12 pb-6 border-b border-white/[0.08]">
           <ProjectFilters
             categories={projectCategories}
             activeCategory={activeCategory}
@@ -104,6 +110,7 @@ export default function Projects() {
           />
         </div>
 
+        {/* Interactive Grid */}
         <ProjectGrid projects={filteredProjects} onOpenVideo={setActiveVideo} />
 
       </div>

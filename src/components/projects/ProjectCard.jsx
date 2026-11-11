@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Play, ExternalLink } from 'lucide-react';
+import defaultFallbackImg from '../../assets/images/ai-video-concept.webp';
+import { Play, ExternalLink, ArrowUpRight } from 'lucide-react';
 
 export default function ProjectCard({ project, onOpenVideo }) {
-  const [imgError, setImgError] = useState(false);
+  const [imgSrc, setImgSrc] = useState(project.thumbnail);
 
   const handleClick = (e) => {
     if (project.youtubeId) {
@@ -12,31 +13,26 @@ export default function ProjectCard({ project, onOpenVideo }) {
   };
 
   return (
-    <article className="project-item group bg-zinc-950 border border-zinc-800 hover:border-[#FFDE00] transition-all duration-300 overflow-hidden flex flex-col justify-between">
+    <article className="project-item group bg-[#0d0d0d] border border-white/10 hover:border-[#FFDE00] transition-all duration-300 overflow-hidden flex flex-col justify-between shadow-xl">
       <div>
-        <div 
+        <div
           onClick={handleClick}
-          className={`relative aspect-[16/10] overflow-hidden bg-zinc-900 border-b border-zinc-800 ${
+          data-cursor={project.youtubeId ? "play" : "case"}
+          className={`relative aspect-[16/10] overflow-hidden bg-black border-b border-white/10 ${
             project.youtubeId ? 'cursor-pointer' : ''
           }`}
         >
-          {!imgError ? (
-            <img
-              src={project.thumbnail}
-              alt={project.title}
-              onError={() => setImgError(true)}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              loading="lazy"
-              width="1200"
-              height="800"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-zinc-900 text-zinc-500 text-xs font-mono">
-              [PREVIEW CASE]
-            </div>
-          )}
+          <img
+            src={imgSrc}
+            alt={project.title}
+            onError={() => setImgSrc(defaultFallbackImg)}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            loading="lazy"
+            width="1200"
+            height="800"
+          />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
 
           <div className="absolute top-4 left-4 flex items-center gap-2">
             <span className="px-3 py-1 text-[10px] font-black uppercase font-display bg-[#FFDE00] text-black">
@@ -61,11 +57,11 @@ export default function ProjectCard({ project, onOpenVideo }) {
         <div className="p-6 sm:p-7 space-y-3">
           <div className="space-y-1">
             {project.projectType && (
-              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block font-bold">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block font-bold">
                 {project.projectType}
               </span>
             )}
-            <h3 
+            <h3
               onClick={handleClick}
               className={`text-xl font-black text-white group-hover:text-[#FFDE00] transition-colors leading-snug font-display uppercase tracking-tight ${
                 project.youtubeId ? 'cursor-pointer' : ''
@@ -81,7 +77,7 @@ export default function ProjectCard({ project, onOpenVideo }) {
         </div>
       </div>
 
-      <div className="p-6 sm:p-7 pt-0 border-t border-zinc-900 mt-4 flex items-center justify-between">
+      <div className="p-6 sm:p-7 pt-0 border-t border-white/[0.06] mt-4 flex items-center justify-between">
         <div className="flex flex-wrap gap-1.5">
           {project.tools?.map((tool, idx) => (
             <span
@@ -97,9 +93,9 @@ export default function ProjectCard({ project, onOpenVideo }) {
           <button
             type="button"
             onClick={() => onOpenVideo(project)}
-            className="px-3.5 py-1.5 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-[10px] uppercase tracking-wider flex items-center gap-1.5 transition-colors shrink-0 ml-3"
+            className="px-3.5 py-1.5 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-[10px] uppercase tracking-wider flex items-center gap-1.5 transition-colors shrink-0 ml-3 active:scale-95"
           >
-            <span>WATCH</span>
+            <span>STREAM</span>
             <Play className="w-3 h-3 fill-current" />
           </button>
         ) : project.projectUrl ? (
@@ -113,7 +109,7 @@ export default function ProjectCard({ project, onOpenVideo }) {
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
         ) : (
-          <div className="text-[10px] font-mono text-zinc-500 uppercase shrink-0 ml-3 font-bold">
+          <div className="text-[10px] font-mono text-zinc-400 uppercase shrink-0 ml-3 font-bold">
             CASE STUDY
           </div>
         )}

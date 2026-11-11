@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Hero from '../components/home/Hero';
-import FeaturedProjects from '../components/home/FeaturedProjects';
+import MarqueeTicker from '../components/ui/MarqueeTicker';
+import SelectedWorksStack from '../components/home/SelectedWorksStack';
 import Expertise from '../components/home/Expertise';
 import About from '../components/home/About';
 import Experience from '../components/home/Experience';
@@ -60,14 +61,43 @@ export default function Index() {
   }, []);
 
   return (
-    <main id="main-content" className="relative bg-black">
+    <main id="main-content" className="relative bg-[#070707]">
+      {/* 01: Hero Intro */}
       <Hero onOpenVideo={setActiveVideo} />
-      <FeaturedProjects onOpenVideo={setActiveVideo} />
+
+      {/* Kinetic Marquee Ticker */}
+      <MarqueeTicker speed={30} />
+
+      {/* 02: Selected Works Experience (Interactive Scroll Stacking) */}
+      <SelectedWorksStack onOpenVideo={setActiveVideo} />
+
+      {/* 03: Capabilities & Disciplines */}
       <Expertise />
+
+      {/* Secondary Reverse Marquee */}
+      <MarqueeTicker
+        speed={35}
+        reverse={true}
+        items={[
+          "CINEMATIC SHORT FORM",
+          "KEYWORD TARGETING",
+          "PROMPT ENGINEERING",
+          "BRAND DIRECTION",
+          "AUDIENCE TARGETING",
+          "CREATIVE PROTOTYPING"
+        ]}
+      />
+
+      {/* 04: Narrative & Creative Profile */}
       <About />
+
+      {/* 05: Practical Journey & Education */}
       <Experience />
+
+      {/* 06: Grand Closing CTA */}
       <ContactSection />
 
+      {/* Video Stream Player Modal */}
       <VideoModal video={activeVideo} onClose={() => setActiveVideo(null)} />
     </main>
   );

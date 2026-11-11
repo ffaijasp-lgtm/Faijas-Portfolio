@@ -14,18 +14,18 @@ export default function ContactSection() {
     if (prefersReducedMotion || !sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo('.contact-element', 
-        { y: 30, opacity: 0 },
+      gsap.fromTo('.contact-reveal',
+        { y: 40, opacity: 0 },
         {
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 85%',
-          },
           y: 0,
           opacity: 1,
-          duration: 0.7,
+          duration: 0.8,
           stagger: 0.12,
-          ease: 'power3.out'
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+          }
         }
       );
     }, sectionRef);
@@ -34,97 +34,143 @@ export default function ContactSection() {
   }, []);
 
   return (
-    <section 
-      id="contact" 
+    <section
+      id="contact"
       ref={sectionRef}
-      className="py-24 sm:py-36 border-t-2 border-[#FFDE00] bg-black relative overflow-hidden"
-      aria-labelledby="contact-heading"
+      className="py-28 sm:py-40 border-t border-white/10 bg-[#070707] text-white relative overflow-hidden"
+      aria-labelledby="contact-closing-heading"
     >
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
-        <div className="max-w-4xl mx-auto text-center space-y-6">
-          
-          <div className="contact-element inline-flex items-center gap-2 px-3.5 py-1 bg-zinc-900 border border-zinc-800 text-xs font-mono uppercase tracking-widest text-[#FFDE00] font-bold">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>CONTACT &bull; INQUIRIES</span>
-          </div>
+      {/* Background ambient yellow glow */}
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[350px] bg-[#FFDE00]/5 rounded-full blur-[140px] pointer-events-none" />
 
-          <h2 id="contact-heading" className="contact-element text-3xl sm:text-6xl md:text-7xl font-black text-white uppercase tracking-tighter font-display leading-[1.0]">
-            LET&apos;S WORK <span className="text-[#FFDE00]">TOGETHER.</span>
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
+        
+        {/* Top Editorial Index */}
+        <div className="contact-reveal flex justify-between items-center text-[10px] font-mono uppercase tracking-widest text-zinc-400 mb-16 pb-4 border-b border-white/[0.08]">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5 text-[#FFDE00]" />
+            <span className="text-white font-bold">(06 / CONNECT DIRECT)</span>
+          </div>
+          <div className="hidden sm:flex items-center gap-6">
+            <span>START A PROJECT</span>
+            <span>&bull;</span>
+            <span>{siteConfig.status}</span>
+          </div>
+        </div>
+
+        {/* Center Closing Statement */}
+        <div className="max-w-5xl mx-auto text-center space-y-8 mb-16 sm:mb-20">
+          <h2
+            id="contact-closing-heading"
+            className="contact-reveal text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black uppercase tracking-tighter font-display leading-[0.95]"
+          >
+            LET&apos;S MAKE <br />
+            <span className="text-[#FFDE00]">SOMETHING.</span>
           </h2>
 
-          <p className="contact-element text-sm sm:text-lg text-zinc-300 max-w-2xl mx-auto leading-relaxed font-sans">
-            Ready to elevate your brand presence with creative digital marketing campaigns, high-ranking SEO, or cinematic AI-generated visuals? Contact directly.
+          <p className="contact-reveal text-base sm:text-xl text-zinc-300 max-w-2xl mx-auto font-sans leading-relaxed font-light">
+            Ready to build high-converting marketing campaigns, cinematic generative AI visuals, or clean search-optimized website structures? Connect directly.
           </p>
+        </div>
 
-          <div className="contact-element pt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-left max-w-3xl mx-auto">
-            
-            <a
-              href={siteConfig.links.email}
-              className="p-6 bg-zinc-950 border border-zinc-800 hover:border-[#FFDE00] hover:bg-zinc-900 transition-all group flex flex-col justify-between"
-              aria-label={`Send email to ${siteConfig.email}`}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 bg-black border border-zinc-800 text-[#FFDE00] flex items-center justify-center group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
-                  <Mail className="w-5 h-5" />
-                </div>
-                <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-[#FFDE00] transition-colors stroke-[3]" />
+        {/* Direct Contact Action Cards */}
+        <div className="contact-reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          
+          {/* Email Card */}
+          <a
+            href={siteConfig.links.email}
+            data-cursor="email"
+            className="p-7 bg-[#0d0d0d] border border-white/10 hover:border-[#FFDE00] transition-all duration-300 group flex flex-col justify-between space-y-8 shadow-xl"
+            aria-label={`Send email to ${siteConfig.email}`}
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 bg-black border border-white/10 text-[#FFDE00] flex items-center justify-center group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
+                <Mail className="w-5 h-5" />
               </div>
-              <div>
-                <span className="text-[10px] font-mono uppercase text-zinc-400 block mb-1 font-bold">EMAIL ADDRESS</span>
-                <span className="text-sm font-bold text-white group-hover:text-[#FFDE00] break-all transition-colors font-sans">
-                  {siteConfig.email}
-                </span>
-              </div>
-            </a>
+              <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-[#FFDE00] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all stroke-[2.5]" />
+            </div>
 
-            <a
-              href={siteConfig.links.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-6 bg-zinc-950 border border-zinc-800 hover:border-[#FFDE00] hover:bg-zinc-900 transition-all group flex flex-col justify-between"
-              aria-label="Visit Faijas P on LinkedIn"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 bg-black border border-zinc-800 text-[#FFDE00] flex items-center justify-center group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
-                  <Linkedin className="w-5 h-5" />
-                </div>
-                <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-[#FFDE00] transition-colors stroke-[3]" />
-              </div>
-              <div>
-                <span className="text-[10px] font-mono uppercase text-zinc-400 block mb-1 font-bold">PROFESSIONAL NETWORK</span>
-                <span className="text-sm font-bold text-white group-hover:text-[#FFDE00] transition-colors font-sans">
-                  LinkedIn Profile
-                </span>
-              </div>
-            </a>
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1 font-bold">
+                EMAIL DIRECT
+              </span>
+              <span className="text-sm sm:text-base font-bold text-white group-hover:text-[#FFDE00] transition-colors break-all font-sans">
+                {siteConfig.email}
+              </span>
+            </div>
+          </a>
 
-            <a
-              href={siteConfig.links.phone}
-              className="p-6 bg-zinc-950 border border-zinc-800 hover:border-[#FFDE00] hover:bg-zinc-900 transition-all group flex flex-col justify-between"
-              aria-label={`Call Faijas P at ${siteConfig.phone}`}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 bg-black border border-zinc-800 text-[#FFDE00] flex items-center justify-center group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
-                  <Phone className="w-5 h-5" />
-                </div>
-                <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-[#FFDE00] transition-colors stroke-[3]" />
+          {/* LinkedIn Card */}
+          <a
+            href={siteConfig.links.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cursor="linkedin"
+            className="p-7 bg-[#0d0d0d] border border-white/10 hover:border-[#FFDE00] transition-all duration-300 group flex flex-col justify-between space-y-8 shadow-xl"
+            aria-label="Connect with Faijas P on LinkedIn"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 bg-black border border-white/10 text-[#FFDE00] flex items-center justify-center group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
+                <Linkedin className="w-5 h-5" />
               </div>
-              <div>
-                <span className="text-[10px] font-mono uppercase text-zinc-400 block mb-1 font-bold">DIRECT PHONE</span>
-                <span className="text-sm font-bold text-white group-hover:text-[#FFDE00] transition-colors font-sans">
-                  +91 {siteConfig.phone}
-                </span>
+              <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-[#FFDE00] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all stroke-[2.5]" />
+            </div>
+
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1 font-bold">
+                NETWORKING
+              </span>
+              <span className="text-sm sm:text-base font-bold text-white group-hover:text-[#FFDE00] transition-colors font-sans">
+                LinkedIn Profile
+              </span>
+            </div>
+          </a>
+
+          {/* Phone / Call Card */}
+          <a
+            href={siteConfig.links.phone}
+            data-cursor="call"
+            className="p-7 bg-[#0d0d0d] border border-white/10 hover:border-[#FFDE00] transition-all duration-300 group flex flex-col justify-between space-y-8 shadow-xl"
+            aria-label={`Call ${siteConfig.phone}`}
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 bg-black border border-white/10 text-[#FFDE00] flex items-center justify-center group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
+                <Phone className="w-5 h-5" />
               </div>
-            </a>
+              <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-[#FFDE00] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all stroke-[2.5]" />
+            </div>
 
-          </div>
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1 font-bold">
+                TELEPHONE
+              </span>
+              <span className="text-sm sm:text-base font-bold text-white group-hover:text-[#FFDE00] transition-colors font-mono">
+                +91 {siteConfig.phone}
+              </span>
+            </div>
+          </a>
 
-          <div className="contact-element pt-8 flex items-center justify-center gap-2 text-xs text-zinc-400 font-mono">
-            <MapPin className="w-3.5 h-3.5 text-[#FFDE00]" />
-            <span>AVAILABLE FOR REMOTE WORK &bull; BASED IN {siteConfig.location}</span>
+          {/* Location Information Card */}
+          <div className="p-7 bg-[#0d0d0d] border border-white/10 flex flex-col justify-between space-y-8 shadow-xl">
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 bg-black border border-white/10 text-[#FFDE00] flex items-center justify-center">
+                <MapPin className="w-5 h-5" />
+              </div>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+            </div>
+
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1 font-bold">
+                LOCATION
+              </span>
+              <span className="text-sm sm:text-base font-bold text-white font-sans">
+                {siteConfig.location}
+              </span>
+            </div>
           </div>
 
         </div>
+
       </div>
     </section>
   );

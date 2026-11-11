@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { siteConfig } from '../../js/data/site';
-import { Megaphone, Target, Wand2, Palette, Globe } from 'lucide-react';
+import { Megaphone, Target, Wand2, Palette, Globe, ChevronDown, Sparkles } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -16,24 +16,25 @@ const iconMap = {
 
 export default function Expertise() {
   const sectionRef = useRef(null);
+  const [activeItem, setActiveItem] = useState(0);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion || !sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo('.expertise-card', 
-        { y: 30, opacity: 0 },
+      gsap.fromTo('.capability-row',
+        { y: 35, opacity: 0 },
         {
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 85%',
-          },
           y: 0,
           opacity: 1,
-          duration: 0.6,
+          duration: 0.7,
           stagger: 0.1,
-          ease: 'power3.out'
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+          }
         }
       );
     }, sectionRef);
@@ -42,62 +43,100 @@ export default function Expertise() {
   }, []);
 
   return (
-    <section 
-      id="expertise" 
+    <section
+      id="capabilities"
       ref={sectionRef}
-      className="py-24 sm:py-32 border-t border-zinc-800 bg-black relative"
-      aria-labelledby="expertise-heading"
+      className="py-24 sm:py-36 border-t border-white/10 bg-[#070707] relative overflow-hidden"
+      aria-labelledby="capabilities-heading"
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         
-        <div className="max-w-3xl space-y-4 mb-16">
-          <span className="text-xs font-mono uppercase tracking-widest text-[#FFDE00] font-bold block">
-            CORE DISCIPLINES &bull; SERVICES
-          </span>
-          <h2 id="expertise-heading" className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tighter font-display leading-tight">
-            WHAT I DO
-          </h2>
-          <p className="text-sm sm:text-base text-zinc-400 leading-relaxed font-sans">
-            Bridging structured digital marketing execution with generative AI content production for high-converting social campaigns.
+        {/* Editorial Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 pb-6 border-b border-white/[0.08]">
+          <div className="space-y-3 max-w-xl">
+            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#FFDE00] font-bold">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>(03 / DISCIPLINES &amp; SOLUTIONS)</span>
+            </div>
+            <h2
+              id="capabilities-heading"
+              className="text-3xl sm:text-5xl md:text-6xl font-black text-white uppercase tracking-tighter font-display leading-none"
+            >
+              CAPABILITIES &amp; <br />
+              <span className="text-[#FFDE00]">SERVICES.</span>
+            </h2>
+          </div>
+
+          <p className="text-sm text-zinc-400 font-sans max-w-md leading-relaxed">
+            Bridging structured marketing execution with generative AI media production for measurable engagement and rapid creative output.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {siteConfig.skills.map((skillGroup, index) => {
+        {/* Editorial Capabilities List */}
+        <div className="divide-y divide-white/[0.08] border-b border-white/[0.08]">
+          {siteConfig.skills.map((skillGroup, idx) => {
             const Icon = iconMap[skillGroup.category] || Megaphone;
+            const num = String(idx + 1).padStart(2, '0');
+            const isOpen = activeItem === idx;
 
             return (
-              <div 
-                key={index}
-                className="w-full expertise-card p-7 bg-zinc-950 border border-zinc-800 hover:border-[#FFDE00] transition-all duration-300 flex flex-col justify-between group"
+              <div
+                key={idx}
+                className="capability-row group py-8 sm:py-12 transition-all duration-300 cursor-pointer"
+                onClick={() => setActiveItem(isOpen ? -1 : idx)}
               >
-                <div>
-                  <div className="w-12 h-12 bg-black border border-zinc-800 text-[#FFDE00] flex items-center justify-center mb-6 group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
-                    <Icon className="w-6 h-6 stroke-[2.2]" />
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                  
+                  {/* Left: Index & Category Name */}
+                  <div className="flex items-start sm:items-center gap-6 sm:gap-10 w-full lg:w-1/2">
+                    <span className="text-xs font-mono font-bold text-zinc-500 group-hover:text-[#FFDE00] transition-colors mt-1 sm:mt-0">
+                      [{num}]
+                    </span>
+
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-none bg-zinc-900 border border-white/10 text-[#FFDE00] flex items-center justify-center shrink-0 group-hover:bg-[#FFDE00] group-hover:text-black transition-all duration-300">
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-white uppercase font-display tracking-tight group-hover:text-[#FFDE00] group-hover:translate-x-2 transition-all duration-300">
+                        {skillGroup.category}
+                      </h3>
+                    </div>
                   </div>
 
-                  <h3 className="text-xl font-black text-white uppercase tracking-tight font-display mb-3">
-                    {skillGroup.category}
-                  </h3>
+                  {/* Right: Summary Description & Toggle */}
+                  <div className="w-full lg:w-1/2 flex items-center justify-between gap-6 pl-16 sm:pl-20 lg:pl-0">
+                    <p className="text-xs sm:text-sm text-zinc-400 font-sans leading-relaxed max-w-md">
+                      {skillGroup.description}
+                    </p>
 
-                  <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed mb-6 font-sans">
-                    {skillGroup.description}
-                  </p>
+                    <button
+                      type="button"
+                      aria-label={`Toggle ${skillGroup.category} details`}
+                      className={`w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-zinc-400 group-hover:border-[#FFDE00] group-hover:text-[#FFDE00] transition-all shrink-0 ${
+                        isOpen ? 'rotate-180 bg-[#FFDE00] text-black border-transparent' : ''
+                      }`}
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </button>
+                  </div>
+
                 </div>
 
-                <div className="pt-4 border-t border-zinc-900">
-                  <h4 className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 mb-3 font-bold">
-                    DELIVERABLES / SKILLS
-                  </h4>
-                  <ul className="space-y-2 font-sans">
+                {/* Expandable Deliverables Drawer */}
+                {isOpen && (
+                  <div className="mt-8 pt-6 border-t border-dashed border-white/10 pl-16 sm:pl-20 lg:pl-28 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 animate-in fade-in duration-300">
                     {skillGroup.items.map((item, itemIdx) => (
-                      <li key={itemIdx} className="flex items-center gap-2 text-xs text-zinc-300 font-medium">
+                      <div
+                        key={itemIdx}
+                        className="p-3.5 bg-zinc-950 border border-white/10 flex items-center gap-2.5 text-xs text-zinc-200 font-mono font-medium"
+                      >
                         <span className="w-1.5 h-1.5 bg-[#FFDE00] shrink-0" />
                         <span>{item}</span>
-                      </li>
+                      </div>
                     ))}
-                  </ul>
-                </div>
+                  </div>
+                )}
+
               </div>
             );
           })}
