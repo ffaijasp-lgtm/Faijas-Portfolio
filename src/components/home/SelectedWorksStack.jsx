@@ -1,10 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { projects } from '../../js/data/project';
 import defaultFallbackImg from '../../assets/images/ai-video-concept.webp';
-import { ArrowUpRight, Play } from 'lucide-react';
+import { ArrowUpRight, Play, Sparkles } from 'lucide-react';
 import SpotlightCard from '../ui/SpotlightCard';
 import MagneticButton from '../ui/MagneticButton';
+import DecryptedText from '../ui/DecryptedText';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -15,6 +16,9 @@ export default function SelectedWorksStack({ onOpenVideo }) {
   const stageRef = useRef(null);
   const cardRefs = useRef([]);
   const progressBarRef = useRef(null);
+  const triggerRef = useRef(null);
+  const isAnimatingRef = useRef(false);
+  const activeIndexRef = useRef(0);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
   const featured = projects.filter(p => p.featured);
@@ -33,109 +37,215 @@ export default function SelectedWorksStack({ onOpenVideo }) {
     return defaultFallbackImg;
   };
 
+  // Direct card transition controller
+  const goToCard = useCallback((targetIndex, direction = 1, syncScroll = true) => {
+    if (targetIndex < 0 || targetIndex >= totalCards) return;
+    if (isAnimatingRef.current && targetIndex === activeIndexRef.current) return;
+
+    isAnimatingRef.current = true;
+    const prevIndex = activeIndexRef.current;
+    activeIndexRef.current = targetIndex;
+    setActiveCardIndex(targetIndex);
+
+    const prevCard = cardRefs.current[prevIndex];
+    const targetCard = cardRefs.current[targetIndex];
+
+    // Animate previous card exit
+    if (prevCard && prevIndex !== targetIndex) {
+      gsap.to(prevCard, {
+        y: direction > 0 ? -60 : 60,
+        opacity: 0,
+        scale: 0.94,
+        duration: 0.45,
+        ease: "power2.inOut",
+        pointerEvents: "none"
+      });
+    }
+
+    // Animate target card entrance
+    if (targetCard) {
+      gsap.fromTo(targetCard,
+        {
+          y: direction > 0 ? 60 : -60,
+          opacity: 0,
+          scale: 0.94,
+          zIndex: 20
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.45,
+          ease: "power2.inOut",
+          pointerEvents: "auto",
+          onComplete: () => {
+            setTimeout(() => {
+              isAnimatingRef.current = false;
+            }, 80);
+          }
+        }
+      );
+    } else {
+      isAnimatingRef.current = false;
+    }
+
+    // Update bottom progress line
+    if (progressBarRef.current) {
+      gsap.to(progressBarRef.current, {
+        width: `${((targetIndex + 1) / totalCards) * 100}%`,
+        duration: 0.35,
+        ease: "power2.out"
+      });
+    }
+
+    // Sync window scroll offset with the pinned timeline
+    if (syncScroll && triggerRef.current && totalCards > 1) {
+      const scrollDistance = (totalCards - 1) * 400;
+      const targetScroll = triggerRef.current.start + (targetIndex / (totalCards - 1)) * scrollDistance;
+      window.scrollTo({
+        top: targetScroll,
+        behavior: "smooth"
+      });
+    }
+  }, [totalCards]);
+
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion || !sectionRef.current) return;
 
     const section = sectionRef.current;
     const cards = cardRefs.current.filter(Boolean);
+    if (!cards.length) return;
 
-    const ctx = gsap.context(() => {
-      const mm = gsap.matchMedia();
+    // Initial setup: Card 0 visible, remaining cards hidden below
+    cards.forEach((card, i) => {
+      if (i === 0) {
+        gsap.set(card, { y: 0, opacity: 1, scale: 1, zIndex: 10, pointerEvents: 'auto' });
+      } else {
+        gsap.set(card, { y: 60, opacity: 0, scale: 0.94, zIndex: 10 + i, pointerEvents: 'none' });
+      }
+    });
 
-      // Pinned Vertical Progression on desktop & tablet
-      mm.add("(min-width: 768px)", () => {
-        // Initial setup: Card 0 visible in center, subsequent cards positioned below
-        cards.forEach((card, i) => {
-          if (i === 0) {
-            gsap.set(card, { y: 0, opacity: 1, scale: 1, zIndex: 10, pointerEvents: 'auto' });
-          } else {
-            gsap.set(card, { y: 100, opacity: 0, scale: 0.95, zIndex: 10 + i, pointerEvents: 'none' });
+    const scrollDistance = (totalCards - 1) * 400;
+
+    // Create ScrollTrigger pin for the section
+    const st = ScrollTrigger.create({
+      trigger: section,
+      pin: true,
+      start: "top top",
+      end: () => `+=${scrollDistance}`,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        // Smoothly synchronize if user scrolls via scrollbar
+        if (!isAnimatingRef.current && totalCards > 1) {
+          const step = Math.min(
+            totalCards - 1,
+            Math.round(self.progress * (totalCards - 1))
+          );
+          if (step !== activeIndexRef.current) {
+            goToCard(step, step > activeIndexRef.current ? 1 : -1, false);
           }
-        });
+        }
+      }
+    });
+    triggerRef.current = st;
 
-        // Master Timeline pinned to viewport center
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            pin: true,
-            start: "top top",
-            end: () => `+=${cards.length * 900}`,
-            scrub: 1.2,
-            invalidateOnRefresh: true,
-            onUpdate: (self) => {
-              // Update progress bar
-              if (progressBarRef.current) {
-                progressBarRef.current.style.width = `${Math.min(100, Math.max(8, self.progress * 100))}%`;
-              }
-              // Update active index
-              const step = Math.min(
-                cards.length - 1,
-                Math.floor(self.progress * cards.length)
-              );
-              setActiveCardIndex(step);
-            }
-          }
-        });
+    // Wheel listener: ONE SCROLL = ONE PROJECT CHANGE
+    const handleWheel = (e) => {
+      if (!st || !st.isActive) return;
 
-        // Chain vertical transitions for each card with hold pauses
-        cards.forEach((card, i) => {
-          // Hold phase for viewing the current project
-          tl.to({}, { duration: 0.6 });
+      const isDown = e.deltaY > 0;
+      const isUp = e.deltaY < 0;
 
-          if (i < cards.length - 1) {
-            const nextCard = cards[i + 1];
+      // Intercept scroll down if not on last card
+      if (isDown && activeIndexRef.current < totalCards - 1) {
+        e.preventDefault();
+        if (!isAnimatingRef.current && Math.abs(e.deltaY) > 10) {
+          goToCard(activeIndexRef.current + 1, 1, true);
+        }
+      } 
+      // Intercept scroll up if not on first card
+      else if (isUp && activeIndexRef.current > 0) {
+        e.preventDefault();
+        if (!isAnimatingRef.current && Math.abs(e.deltaY) > 10) {
+          goToCard(activeIndexRef.current - 1, -1, true);
+        }
+      }
+      // On boundary cards (last card scrolling down, or first card scrolling up),
+      // natural scroll passes through freely to the next/prev section.
+    };
 
-            // Current card moves slightly up, fades and scales down
-            tl.to(card, {
-              y: -80,
-              opacity: 0,
-              scale: 0.92,
-              duration: 0.8,
-              ease: "power2.inOut",
-              pointerEvents: 'none'
-            })
-            // Next card ascends smoothly from below into the center
-            .to(nextCard, {
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              duration: 0.8,
-              ease: "power2.inOut",
-              pointerEvents: 'auto'
-            }, "<+=0.1");
-          }
-        });
+    // Touch swipe listener for mobile/tablet
+    let touchStartY = 0;
+    const handleTouchStart = (e) => {
+      touchStartY = e.touches[0].clientY;
+    };
+    const handleTouchEnd = (e) => {
+      if (!st || !st.isActive) return;
+      const touchEndY = e.changedTouches[0].clientY;
+      const diff = touchStartY - touchEndY;
+      if (Math.abs(diff) < 35) return;
 
-        // Final hold for the last card so it stays centered before unpinning
-        tl.to({}, { duration: 0.6 });
-      });
+      if (diff > 0 && activeIndexRef.current < totalCards - 1) {
+        goToCard(activeIndexRef.current + 1, 1, true);
+      } else if (diff < 0 && activeIndexRef.current > 0) {
+        goToCard(activeIndexRef.current - 1, -1, true);
+      }
+    };
 
-      // Mobile linear flow
-      mm.add("(max-width: 767px)", () => {
-        cards.forEach((card) => {
-          gsap.set(card, { y: 0, opacity: 1, scale: 1, pointerEvents: 'auto' });
-        });
-      });
-    }, sectionRef);
+    // Keyboard navigation (Arrow keys)
+    const handleKeyDown = (e) => {
+      if (!st || !st.isActive) return;
+      if (e.key === "ArrowDown" && activeIndexRef.current < totalCards - 1) {
+        e.preventDefault();
+        goToCard(activeIndexRef.current + 1, 1, true);
+      } else if (e.key === "ArrowUp" && activeIndexRef.current > 0) {
+        e.preventDefault();
+        goToCard(activeIndexRef.current - 1, -1, true);
+      }
+    };
 
-    return () => ctx.revert();
-  }, [totalCards]);
+    section.addEventListener('wheel', handleWheel, { passive: false });
+    section.addEventListener('touchstart', handleTouchStart, { passive: true });
+    section.addEventListener('touchend', handleTouchEnd, { passive: true });
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      section.removeEventListener('wheel', handleWheel);
+      section.removeEventListener('touchstart', handleTouchStart);
+      section.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('keydown', handleKeyDown);
+      st.kill();
+    };
+  }, [totalCards, goToCard]);
 
   return (
     <section
       id="works"
       ref={sectionRef}
-      className="w-full min-h-screen md:h-screen md:max-h-screen pt-20 pb-4 md:pt-20 md:pb-5 bg-[#070707] text-white relative flex flex-col justify-between overflow-hidden"
+      className="w-full min-h-screen md:h-screen md:max-h-screen pt-16 pb-3 md:pt-16 md:pb-4 bg-[#070707] text-white relative flex flex-col justify-between overflow-hidden"
       aria-labelledby="selected-works-heading"
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-[#FFDE00]/5 rounded-full blur-[160px] pointer-events-none" />
 
-      {/* 1. COMPACT TOP STATUS / ARCHIVE BAR */}
-      <div className="w-full max-w-4xl mx-auto px-5 sm:px-8 text-center z-20 shrink-0">
-        <h2 id="selected-works-heading" className="sr-only">Selected Works</h2>
-        <div className="flex items-center justify-center gap-3 sm:gap-4 text-xs font-mono uppercase tracking-widest">
+      {/* 1. SECTION HEADER TEXT & ARCHIVE LINK */}
+      <div className="w-full max-w-4xl mx-auto px-5 sm:px-8 text-center z-20 shrink-0 pt-2 sm:pt-3">
+        <div className="inline-flex items-center gap-2 px-3 py-0.5 bg-zinc-950 border border-white/10 text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[#FFDE00] font-bold mb-1">
+          <Sparkles className="w-3 h-3" />
+          <DecryptedText text="02 // CURATED PRODUCTIONS" speed={30} />
+        </div>
+
+        <h2
+          id="selected-works-heading"
+          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tight font-display text-white"
+        >
+          SELECTED <span className="text-[#FFDE00]">WORKS.</span>
+        </h2>
+
+        {/* Compact Status & Archive Link */}
+        <div className="flex items-center justify-center gap-3 sm:gap-4 text-[10px] sm:text-xs font-mono uppercase tracking-widest mt-1.5">
           <span className="text-zinc-400">
             CASE <span className="text-[#FFDE00] font-bold">0{activeCardIndex + 1}</span> / 0{totalCards}
           </span>
@@ -166,7 +276,7 @@ export default function SelectedWorksStack({ onOpenVideo }) {
                 key={project.id}
                 ref={(el) => (cardRefs.current[idx] = el)}
                 className={`w-full ${
-                  idx === 0 ? 'relative' : 'md:absolute md:top-0 md:left-0 md:right-0 mt-8 md:mt-0'
+                  idx === 0 ? 'relative' : 'absolute top-0 left-0 right-0'
                 }`}
               >
                 <SpotlightCard
@@ -192,7 +302,7 @@ export default function SelectedWorksStack({ onOpenVideo }) {
                   <div
                     onClick={() => project.youtubeId && onOpenVideo && onOpenVideo(project)}
                     data-cursor={project.youtubeId ? "stream" : "case"}
-                    className={`relative aspect-[16/9] max-h-[35vh] sm:max-h-[38vh] md:max-h-[40vh] w-full overflow-hidden bg-black border-b border-white/[0.08] group ${
+                    className={`relative aspect-[16/9] max-h-[32vh] sm:max-h-[35vh] md:max-h-[38vh] w-full overflow-hidden bg-black border-b border-white/[0.08] group ${
                       project.youtubeId ? 'cursor-pointer' : ''
                     }`}
                   >
@@ -215,7 +325,7 @@ export default function SelectedWorksStack({ onOpenVideo }) {
                     {/* Centered Play Button */}
                     {project.youtubeId && (
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 rounded-full bg-black/70 border border-[#FFDE00]/70 backdrop-blur-md flex items-center justify-center text-[#FFDE00] group-hover:scale-110 group-hover:bg-[#FFDE00] group-hover:text-black transition-all duration-300 shadow-2xl">
+                        <div className="w-13 h-13 sm:w-16 sm:h-16 md:w-18 md:h-18 rounded-full bg-black/70 border border-[#FFDE00]/70 backdrop-blur-md flex items-center justify-center text-[#FFDE00] group-hover:scale-110 group-hover:bg-[#FFDE00] group-hover:text-black transition-all duration-300 shadow-2xl">
                           <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-current translate-x-0.5" />
                         </div>
                       </div>
@@ -237,10 +347,10 @@ export default function SelectedWorksStack({ onOpenVideo }) {
                   </div>
 
                   {/* Card Information & Action Bar */}
-                  <div className="p-4 sm:p-5 md:p-6 space-y-2.5 sm:space-y-3">
+                  <div className="p-4 sm:p-5 md:p-6 space-y-2 sm:space-y-2.5">
                     <h3
                       onClick={() => project.youtubeId && onOpenVideo && onOpenVideo(project)}
-                      className={`text-base sm:text-lg md:text-xl lg:text-2xl font-black text-white hover:text-[#FFDE00] transition-colors uppercase font-display tracking-tight leading-snug line-clamp-2 ${
+                      className={`text-base sm:text-lg md:text-xl lg:text-2xl font-black text-white hover:text-[#FFDE00] transition-colors uppercase font-display tracking-tight leading-snug line-clamp-1 sm:line-clamp-2 ${
                         project.youtubeId ? 'cursor-pointer' : ''
                       }`}
                     >
@@ -251,7 +361,7 @@ export default function SelectedWorksStack({ onOpenVideo }) {
                       {project.description}
                     </p>
 
-                    <div className="pt-3 sm:pt-4 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-3">
+                    <div className="pt-2.5 sm:pt-3 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-3">
                       <div className="flex flex-wrap gap-1.5">
                         {project.tools?.map((tool, tIdx) => (
                           <span
@@ -267,7 +377,7 @@ export default function SelectedWorksStack({ onOpenVideo }) {
                         <MagneticButton
                           strength={0.3}
                           onClick={() => onOpenVideo && onOpenVideo(project)}
-                          className="px-4 py-2 sm:px-5 sm:py-2.5 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-xl active:scale-95"
+                          className="px-4 py-1.5 sm:px-5 sm:py-2 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-xl active:scale-95"
                         >
                           <span>STREAM CASE</span>
                           <ArrowUpRight className="w-3.5 h-3.5 stroke-[3]" />
@@ -284,16 +394,40 @@ export default function SelectedWorksStack({ onOpenVideo }) {
 
       {/* 3. CENTERED PROGRESS BAR & CUES */}
       <div className="max-w-4xl mx-auto w-full px-5 sm:px-8 z-20 pb-2 shrink-0">
-        <div className="flex items-center justify-between text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-2">
-          <span>01 / CASE 01</span>
-          <span className="hidden sm:inline">SCROLL VERTICALLY &bull; LOCKED STAGE VIEW</span>
-          <span>0{totalCards} / CASE 0{totalCards}</span>
+        <div className="flex items-center justify-between text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-1.5">
+          {/* Clickable Quick Navigation Numbers */}
+          <div className="flex items-center gap-1.5">
+            {featured.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => goToCard(i, i > activeCardIndex ? 1 : -1, true)}
+                className={`px-2 py-0.5 text-[9px] sm:text-[10px] transition-colors font-bold ${
+                  i === activeCardIndex
+                    ? 'bg-[#FFDE00] text-black'
+                    : 'bg-zinc-900 text-zinc-400 hover:text-white'
+                }`}
+                aria-label={`Jump to case 0${i + 1}`}
+              >
+                0{i + 1}
+              </button>
+            ))}
+          </div>
+
+          <span className="hidden sm:inline text-zinc-400">
+            SCROLL TO ADVANCE &bull; LOCKED STAGE VIEW
+          </span>
+
+          <span className="text-zinc-400 font-bold">
+            CASE 0{activeCardIndex + 1} / 0{totalCards}
+          </span>
         </div>
+
         <div className="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
           <div
             ref={progressBarRef}
-            className="h-full bg-[#FFDE00] transition-all duration-150"
-            style={{ width: `${(1 / totalCards) * 100}%` }}
+            className="h-full bg-[#FFDE00] transition-all duration-300"
+            style={{ width: `${((activeCardIndex + 1) / totalCards) * 100}%` }}
           />
         </div>
       </div>
