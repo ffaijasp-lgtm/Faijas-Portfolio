@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { projects } from '../../js/data/project';
 import defaultFallbackImg from '../../assets/images/ai-video-concept.webp';
-import { ArrowUpRight, Play, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowUpRight, Play, Sparkles, Layers } from 'lucide-react';
 import SpotlightCard from '../ui/SpotlightCard';
 import DecryptedText from '../ui/DecryptedText';
 import MagneticButton from '../ui/MagneticButton';
@@ -13,57 +13,102 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function SelectedWorksStack({ onOpenVideo }) {
   const sectionRef = useRef(null);
-  const containerRef = useRef(null);
-  const trackRef = useRef(null);
+  const stageRef = useRef(null);
+  const cardRefs = useRef([]);
   const progressBarRef = useRef(null);
-  const [currentIndex, setCurrentIndex] = useState(1);
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
 
   const featured = projects.filter(p => p.featured);
   const totalCards = featured.length;
 
+  const getProjectImage = (project) => {
+    if (project.thumbnail && typeof project.thumbnail === 'string' && !project.thumbnail.includes('Woman_character')) {
+      return project.thumbnail;
+    }
+    if (typeof project.thumbnail === 'object' && project.thumbnail) {
+      return project.thumbnail;
+    }
+    if (project.youtubeId) {
+      return `https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg`;
+    }
+    return defaultFallbackImg;
+  };
+
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion || !sectionRef.current || !trackRef.current) return;
+    if (prefersReducedMotion || !sectionRef.current) return;
 
     const section = sectionRef.current;
-    const track = trackRef.current;
+    const cards = cardRefs.current.filter(Boolean);
 
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
-      // Pinned Horizontal Showcase on desktop & tablet
+      // Pinned Vertical Progression on desktop & tablet
       mm.add("(min-width: 768px)", () => {
-        const getScrollDistance = () => track.scrollWidth - window.innerWidth + 120;
+        // Initial setup: Card 0 visible in center, subsequent cards positioned below
+        cards.forEach((card, i) => {
+          if (i === 0) {
+            gsap.set(card, { y: 0, opacity: 1, scale: 1, zIndex: 10 });
+          } else {
+            gsap.set(card, { y: 120, opacity: 0, scale: 0.95, zIndex: 10 + i });
+          }
+        });
 
-        const tween = gsap.to(track, {
-          x: () => -getScrollDistance(),
-          ease: "none",
+        // Master Timeline pinned to viewport center
+        const tl = gsap.timeline({
           scrollTrigger: {
             trigger: section,
             pin: true,
-            scrub: 1.2,
             start: "top top",
-            end: () => `+=${getScrollDistance() * 1.2}`,
+            end: () => `+=${cards.length * 900}`,
+            scrub: 1.2,
             invalidateOnRefresh: true,
             onUpdate: (self) => {
               // Update progress bar
               if (progressBarRef.current) {
-                progressBarRef.current.style.width = `${Math.min(100, Math.max(5, self.progress * 100))}%`;
+                progressBarRef.current.style.width = `${Math.min(100, Math.max(8, self.progress * 100))}%`;
               }
-              // Calculate active index
-              const calculatedIndex = Math.min(
-                totalCards,
-                Math.max(1, Math.round(self.progress * (totalCards - 1)) + 1)
+              // Update active index
+              const step = Math.min(
+                cards.length - 1,
+                Math.floor(self.progress * cards.length)
               );
-              setCurrentIndex(calculatedIndex);
+              setActiveCardIndex(step);
             }
+          }
+        });
+
+        // Chain vertical transitions for each card
+        cards.forEach((card, i) => {
+          if (i < cards.length - 1) {
+            const nextCard = cards[i + 1];
+
+            // Current card moves slightly up, fades and scales down
+            tl.to(card, {
+              y: -80,
+              opacity: 0,
+              scale: 0.92,
+              duration: 1,
+              ease: "power2.inOut",
+            })
+            // Next card ascends smoothly from below into the center
+            .to(nextCard, {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              duration: 1,
+              ease: "power2.inOut",
+            }, "<+=0.15");
           }
         });
       });
 
-      // Simple horizontal snap scroll on mobile
+      // Mobile linear flow
       mm.add("(max-width: 767px)", () => {
-        // Mobile preserves smooth horizontal swipe with native touch
+        cards.forEach((card) => {
+          gsap.set(card, { y: 0, opacity: 1, scale: 1 });
+        });
       });
     }, sectionRef);
 
@@ -74,22 +119,19 @@ export default function SelectedWorksStack({ onOpenVideo }) {
     <section
       id="works"
       ref={sectionRef}
-      className="w-full min-h-screen py-16 md:py-20 bg-[#070707] text-white relative overflow-hidden flex flex-col justify-between"
+      className="w-full min-h-screen py-16 md:py-24 bg-[#070707] text-white relative flex flex-col justify-between overflow-hidden"
       aria-labelledby="selected-works-heading"
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-[#FFDE00]/5 rounded-full blur-[160px] pointer-events-none" />
 
-      {/* CENTERED SECTION HEADER */}
-      <div className="max-w-4xl mx-auto px-5 sm:px-8 text-center space-y-4 pt-4 md:pt-6 z-20">
-        
-        {/* Top badge */}
+      {/* 1. CENTERED SECTION HEADER */}
+      <div className="max-w-4xl mx-auto px-5 sm:px-8 text-center space-y-3 z-20">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-zinc-950 border border-white/10 text-xs font-mono uppercase tracking-widest text-[#FFDE00] font-bold">
           <Sparkles className="w-3.5 h-3.5" />
-          <DecryptedText text="02 // SELECTED PRODUCTIONS" speed={30} />
+          <DecryptedText text="02 // CURATED PRODUCTIONS" speed={30} />
         </div>
 
-        {/* Massive Centered Title */}
         <h2
           id="selected-works-heading"
           className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-[0.95] font-display"
@@ -97,15 +139,14 @@ export default function SelectedWorksStack({ onOpenVideo }) {
           SELECTED <span className="text-[#FFDE00]">WORKS.</span>
         </h2>
 
-        {/* Subtitle */}
         <p className="text-xs sm:text-sm md:text-base text-zinc-400 font-sans max-w-xl mx-auto font-light leading-relaxed">
-          Scroll to explore curated AI-assisted short-form concepts, promotional campaigns, and technical digital marketing projects.
+          Screen locked in focus. Scroll vertically to transition through each promotional campaign and generative AI case study in the center.
         </p>
 
-        {/* Counter and Link */}
-        <div className="flex items-center justify-center gap-6 pt-2 text-xs font-mono">
+        {/* Dynamic Project Index Counter & Full Archive Link */}
+        <div className="flex items-center justify-center gap-6 pt-1 text-xs font-mono">
           <span className="text-zinc-500 font-bold">
-            PROJECT <span className="text-[#FFDE00]">{String(currentIndex).padStart(2, '0')}</span> / {String(totalCards).padStart(2, '0')}
+            CASE <span className="text-[#FFDE00]">0{activeCardIndex + 1}</span> / 0{totalCards}
           </span>
           <span className="text-zinc-700">&bull;</span>
           <Link
@@ -113,42 +154,42 @@ export default function SelectedWorksStack({ onOpenVideo }) {
             data-cursor="all"
             className="text-white hover:text-[#FFDE00] transition-colors border-b border-white/20 hover:border-[#FFDE00] pb-0.5 inline-flex items-center gap-1 font-bold"
           >
-            <span>FULL ARCHIVE ({projects.length})</span>
+            <span>VIEW ALL PROJECTS ({projects.length})</span>
             <ArrowUpRight className="w-3 h-3 stroke-[3]" />
           </Link>
         </div>
-
       </div>
 
-      {/* FLUID HORIZONTAL SHOWCASE TRACK */}
+      {/* 2. CENTERED VERTICAL PROJECT STAGE */}
       <div
-        ref={containerRef}
-        className="w-full my-auto py-8 relative z-10 overflow-x-auto md:overflow-x-visible no-scrollbar"
+        ref={stageRef}
+        className="w-full max-w-4xl mx-auto px-5 sm:px-8 my-auto relative z-10 min-h-[520px] sm:min-h-[580px] md:min-h-[620px] flex items-center justify-center"
       >
-        <div
-          ref={trackRef}
-          className="flex flex-nowrap items-center gap-6 sm:gap-10 px-6 sm:px-16 md:px-24 w-max"
-        >
+        <div className="relative w-full">
           {featured.map((project, idx) => {
             const num = String(idx + 1).padStart(2, '0');
+            const imgSrc = getProjectImage(project);
 
             return (
               <div
                 key={project.id}
-                className="w-[86vw] sm:w-[70vw] md:w-[620px] lg:w-[680px] shrink-0"
+                ref={(el) => (cardRefs.current[idx] = el)}
+                className={`w-full ${
+                  idx === 0 ? 'relative' : 'md:absolute md:top-0 md:left-0 md:right-0 mt-8 md:mt-0'
+                }`}
               >
                 <SpotlightCard
-                  spotlightColor="rgba(255, 222, 0, 0.18)"
+                  spotlightColor="rgba(255, 222, 0, 0.2)"
                   borderColor="rgba(255, 222, 0, 0.6)"
-                  className="rounded-none border border-white/10 hover:border-[#FFDE00] transition-all duration-500 group shadow-2xl flex flex-col justify-between"
+                  className="rounded-none border border-white/10 hover:border-[#FFDE00] transition-colors duration-500 shadow-2xl flex flex-col justify-between w-full bg-[#0d0d0d]"
                 >
-                  {/* Card Header Bar */}
-                  <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.08] text-[10px] font-mono uppercase tracking-widest text-zinc-400">
+                  {/* Card Header Status Bar */}
+                  <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.08] text-[10px] font-mono uppercase tracking-widest text-zinc-400">
                     <div className="flex items-center gap-2">
                       <span className="text-[#FFDE00] font-bold">[{num}]</span>
                       <span className="text-white font-bold">{project.category}</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       {project.year && <span>{project.year}</span>}
                       {project.projectType && (
                         <span className="text-zinc-500 hidden sm:inline">&bull; {project.projectType}</span>
@@ -156,72 +197,77 @@ export default function SelectedWorksStack({ onOpenVideo }) {
                     </div>
                   </div>
 
-                  {/* Visual Preview / Video Thumbnail */}
+                  {/* High-Resolution Visual / Video Showcase Frame */}
                   <div
                     onClick={() => project.youtubeId && onOpenVideo && onOpenVideo(project)}
-                    data-cursor={project.youtubeId ? "stream" : "preview"}
-                    className={`relative aspect-[16/9] overflow-hidden bg-black border-b border-white/[0.08] ${
+                    data-cursor={project.youtubeId ? "stream" : "case"}
+                    className={`relative aspect-[16/9] w-full overflow-hidden bg-black border-b border-white/[0.08] ${
                       project.youtubeId ? 'cursor-pointer' : ''
                     }`}
                   >
                     <img
-                      src={project.thumbnail}
+                      src={imgSrc}
                       alt={project.title}
-                      onError={(e) => { e.currentTarget.src = defaultFallbackImg; }}
+                      onError={(e) => {
+                        e.currentTarget.src = project.youtubeId 
+                          ? `https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg`
+                          : defaultFallbackImg;
+                      }}
                       loading="lazy"
                       width="1200"
                       height="675"
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent opacity-70 group-hover:opacity-40 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
 
                     {/* Centered Play Button */}
                     {project.youtubeId && (
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-black/70 border border-[#FFDE00]/70 backdrop-blur-md flex items-center justify-center text-[#FFDE00] group-hover:scale-110 group-hover:bg-[#FFDE00] group-hover:text-black transition-all duration-300 shadow-2xl">
-                          <Play className="w-6 h-6 fill-current translate-x-0.5" />
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-black/70 border border-[#FFDE00]/70 backdrop-blur-md flex items-center justify-center text-[#FFDE00] group-hover:scale-110 group-hover:bg-[#FFDE00] group-hover:text-black transition-all duration-300 shadow-2xl">
+                          <Play className="w-7 h-7 fill-current translate-x-0.5" />
                         </div>
                       </div>
                     )}
 
-                    {/* Category pill */}
+                    {/* Top Floating Badge */}
                     <div className="absolute top-4 left-4">
                       <span className="px-3 py-1 bg-black/80 border border-white/20 text-[#FFDE00] font-display font-black text-[10px] uppercase backdrop-blur-md">
                         {project.category}
                       </span>
                     </div>
 
-                    {/* Stream instruction */}
+                    {/* Bottom Bitrate Hint */}
                     <div className="absolute bottom-3 left-4 hidden sm:block">
-                      <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest bg-black/60 px-2.5 py-1 backdrop-blur-sm border border-white/10">
-                        CLICK TO STREAM IN 4K
+                      <span className="text-[10px] font-mono text-zinc-300 uppercase tracking-widest bg-black/75 px-3 py-1 backdrop-blur-sm border border-white/10">
+                        DIRECT 4K REEL STREAM
                       </span>
                     </div>
                   </div>
 
-                  {/* Project Information */}
+                  {/* Card Information & Action Bar */}
                   <div className="p-6 sm:p-8 space-y-4">
-                    <h3
-                      onClick={() => project.youtubeId && onOpenVideo && onOpenVideo(project)}
-                      className={`text-xl sm:text-2xl font-black text-white group-hover:text-[#FFDE00] transition-colors uppercase font-display tracking-tight ${
-                        project.youtubeId ? 'cursor-pointer' : ''
-                      }`}
-                    >
-                      {project.title}
-                    </h3>
+                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3">
+                      <h3
+                        onClick={() => project.youtubeId && onOpenVideo && onOpenVideo(project)}
+                        className={`text-xl sm:text-2xl md:text-3xl font-black text-white group-hover:text-[#FFDE00] transition-colors uppercase font-display tracking-tight ${
+                          project.youtubeId ? 'cursor-pointer' : ''
+                        }`}
+                      >
+                        {project.title}
+                      </h3>
+                    </div>
 
-                    <p className="text-xs sm:text-sm text-zinc-400 font-sans leading-relaxed line-clamp-2">
+                    <p className="text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed font-light">
                       {project.description}
                     </p>
 
-                    {/* Tools and Action CTA */}
                     <div className="pt-4 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-4">
                       <div className="flex flex-wrap gap-1.5">
                         {project.tools?.map((tool, tIdx) => (
                           <span
                             key={tIdx}
-                            className="px-2.5 py-0.5 text-[9px] sm:text-[10px] font-mono uppercase bg-zinc-950 text-zinc-300 border border-zinc-800"
+                            className="px-2.5 py-1 text-[10px] font-mono uppercase bg-zinc-950 text-zinc-300 border border-zinc-800"
                           >
                             {tool}
                           </span>
@@ -232,7 +278,7 @@ export default function SelectedWorksStack({ onOpenVideo }) {
                         <MagneticButton
                           strength={0.3}
                           onClick={() => onOpenVideo && onOpenVideo(project)}
-                          className="px-4 py-2 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-[10px] sm:text-[11px] uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-lg active:scale-95"
+                          className="px-5 py-2.5 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-xl active:scale-95"
                         >
                           <span>STREAM CASE</span>
                           <ArrowUpRight className="w-3.5 h-3.5 stroke-[3]" />
@@ -247,12 +293,12 @@ export default function SelectedWorksStack({ onOpenVideo }) {
         </div>
       </div>
 
-      {/* BOTTOM PROGRESS BAR & CUES */}
-      <div className="max-w-4xl mx-auto w-full px-6 sm:px-8 z-20 pb-4">
+      {/* 3. CENTERED PROGRESS BAR & CUES */}
+      <div className="max-w-4xl mx-auto w-full px-5 sm:px-8 z-20 pt-4">
         <div className="flex items-center justify-between text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-2">
-          <span>01 / PREVIEW</span>
-          <span className="hidden sm:inline">SCROLL TO ADVANCE SHOWCASE &bull; PINNED FLOW</span>
-          <span>0{totalCards} / END</span>
+          <span>01 / CASE 01</span>
+          <span className="hidden sm:inline">SCROLL VERTICALLY &bull; LOCKED STAGE VIEW</span>
+          <span>0{totalCards} / CASE 0{totalCards}</span>
         </div>
         <div className="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
           <div

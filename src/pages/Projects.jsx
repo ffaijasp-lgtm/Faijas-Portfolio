@@ -4,6 +4,8 @@ import { siteConfig } from '../js/data/site';
 import ProjectFilters from '../components/projects/ProjectFilters';
 import ProjectGrid from '../components/projects/ProjectGrid';
 import VideoModal from '../components/ui/VideoModal';
+import DecryptedText from '../components/ui/DecryptedText';
+import MagneticButton from '../components/ui/MagneticButton';
 import { Sparkles, Layers, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -67,20 +69,22 @@ export default function Projects() {
         
         {/* Back Link */}
         <div className="mb-8">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-400 hover:text-[#FFDE00] transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>&larr; BACK TO OVERVIEW</span>
-          </Link>
+          <MagneticButton strength={0.3}>
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-400 hover:text-[#FFDE00] transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>&larr; BACK TO OVERVIEW</span>
+            </Link>
+          </MagneticButton>
         </div>
 
         {/* Editorial Archive Header */}
         <header className="max-w-4xl space-y-4 mb-14 pb-8 border-b border-white/10">
           <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#FFDE00] font-bold">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>CATALOGUE ARCHIVE &bull; EDITORIAL WORKS</span>
+            <DecryptedText text="CATALOGUE ARCHIVE // ALL CASES" speed={30} />
           </div>
 
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tighter font-display leading-[0.95]">
