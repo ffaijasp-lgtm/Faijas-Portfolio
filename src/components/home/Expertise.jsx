@@ -1,6 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { siteConfig } from '../../js/data/site';
-import { Megaphone, Target, Wand2, Palette, Globe, ChevronDown, Sparkles } from 'lucide-react';
+import { Megaphone, Target, Wand2, Palette, Globe, Sparkles, ArrowUpRight, CheckCircle2 } from 'lucide-react';
+import SpotlightCard from '../ui/SpotlightCard';
+import DecryptedText from '../ui/DecryptedText';
+import ShinyText from '../ui/ShinyText';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -14,21 +17,28 @@ const iconMap = {
   "Website Platform": Globe,
 };
 
+const badgeMap = {
+  "Digital Marketing": "ORGANIC AUDIENCE GROWTH",
+  "Paid Advertising": "DATA-DRIVEN PERFORMANCE",
+  "AI Content Creation": "GENERATIVE AI PIPELINE",
+  "Design & Editing Tools": "RAPID POST-PRODUCTION",
+  "Website Platform": "TECHNICAL SEO ARCHITECTURE",
+};
+
 export default function Expertise() {
   const sectionRef = useRef(null);
-  const [activeItem, setActiveItem] = useState(0);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion || !sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo('.capability-row',
-        { y: 35, opacity: 0 },
+      gsap.fromTo('.bento-item-reveal',
+        { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.7,
+          duration: 0.8,
           stagger: 0.1,
           ease: 'power3.out',
           scrollTrigger: {
@@ -46,97 +56,103 @@ export default function Expertise() {
     <section
       id="capabilities"
       ref={sectionRef}
-      className="py-24 sm:py-36 border-t border-white/10 bg-[#070707] relative overflow-hidden"
+      className="py-24 sm:py-36 border-t border-white/10 bg-[#070707] text-white relative overflow-hidden"
       aria-labelledby="capabilities-heading"
     >
-      <div className="max-w-7xl mx-auto px-5 sm:px-8">
+      {/* Background ambient glow */}
+      <div className="absolute top-1/3 right-10 w-[500px] h-[400px] bg-[#FFDE00]/5 rounded-full blur-[140px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
         
-        {/* Editorial Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 pb-6 border-b border-white/[0.08]">
-          <div className="space-y-3 max-w-xl">
-            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#FFDE00] font-bold">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>(03 / DISCIPLINES &amp; SOLUTIONS)</span>
-            </div>
-            <h2
-              id="capabilities-heading"
-              className="text-3xl sm:text-5xl md:text-6xl font-black text-white uppercase tracking-tighter font-display leading-none"
-            >
-              CAPABILITIES &amp; <br />
-              <span className="text-[#FFDE00]">SERVICES.</span>
-            </h2>
+        {/* Centered Editorial Header */}
+        <div className="max-w-3xl mx-auto text-center space-y-4 mb-16 sm:mb-20">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-zinc-950 border border-white/10 text-xs font-mono uppercase tracking-widest text-[#FFDE00] font-bold">
+            <Sparkles className="w-3.5 h-3.5" />
+            <DecryptedText text="03 // CAPABILITIES & DISCIPLINES" speed={30} />
           </div>
 
-          <p className="text-sm text-zinc-400 font-sans max-w-md leading-relaxed">
-            Bridging structured marketing execution with generative AI media production for measurable engagement and rapid creative output.
+          <h2
+            id="capabilities-heading"
+            className="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tighter leading-[0.95] font-display"
+          >
+            CORE DISCIPLINES &amp; <br />
+            <span className="text-[#FFDE00]">SERVICES.</span>
+          </h2>
+
+          <p className="text-sm sm:text-base text-zinc-400 font-sans max-w-xl mx-auto font-light leading-relaxed">
+            Bridging structured marketing execution with generative AI media production for measurable digital audience engagement and rapid turnaround.
           </p>
         </div>
 
-        {/* Editorial Capabilities List */}
-        <div className="divide-y divide-white/[0.08] border-b border-white/[0.08]">
+        {/* AWWWARDS-STYLE BENTO SPOTLIGHT GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {siteConfig.skills.map((skillGroup, idx) => {
             const Icon = iconMap[skillGroup.category] || Megaphone;
+            const badge = badgeMap[skillGroup.category] || "FEATURED DISCIPLINE";
             const num = String(idx + 1).padStart(2, '0');
-            const isOpen = activeItem === idx;
+
+            // Asymmetrical Bento layout: Card 0 and Card 2 take 2 columns on large viewports for visual drama
+            const isWide = idx === 0 || idx === 2;
+            const gridColClass = isWide ? "lg:col-span-2" : "lg:col-span-1";
 
             return (
               <div
                 key={idx}
-                className="capability-row group py-8 sm:py-12 transition-all duration-300 cursor-pointer"
-                onClick={() => setActiveItem(isOpen ? -1 : idx)}
+                className={`bento-item-reveal ${gridColClass}`}
               >
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                  
-                  {/* Left: Index & Category Name */}
-                  <div className="flex items-start sm:items-center gap-6 sm:gap-10 w-full lg:w-1/2">
-                    <span className="text-xs font-mono font-bold text-zinc-500 group-hover:text-[#FFDE00] transition-colors mt-1 sm:mt-0">
-                      [{num}]
-                    </span>
-
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-none bg-zinc-900 border border-white/10 text-[#FFDE00] flex items-center justify-center shrink-0 group-hover:bg-[#FFDE00] group-hover:text-black transition-all duration-300">
-                        <Icon className="w-5 h-5" />
+                <SpotlightCard
+                  spotlightColor="rgba(255, 222, 0, 0.16)"
+                  borderColor="rgba(255, 222, 0, 0.5)"
+                  className="h-full p-7 sm:p-9 border border-white/10 hover:border-[#FFDE00] transition-all duration-500 rounded-none hover:-translate-y-1.5 flex flex-col justify-between group shadow-2xl"
+                >
+                  <div className="space-y-6">
+                    {/* Top status & index */}
+                    <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] text-[10px] font-mono uppercase tracking-widest text-zinc-400">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[#FFDE00] font-bold">[{num}]</span>
+                        <span className="text-zinc-500">DISCIPLINE</span>
                       </div>
-                      <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-white uppercase font-display tracking-tight group-hover:text-[#FFDE00] group-hover:translate-x-2 transition-all duration-300">
-                        {skillGroup.category}
-                      </h3>
+                      <span className="text-[#FFDE00] font-bold px-2 py-0.5 bg-black border border-white/10">
+                        {badge}
+                      </span>
                     </div>
-                  </div>
 
-                  {/* Right: Summary Description & Toggle */}
-                  <div className="w-full lg:w-1/2 flex items-center justify-between gap-6 pl-16 sm:pl-20 lg:pl-0">
-                    <p className="text-xs sm:text-sm text-zinc-400 font-sans leading-relaxed max-w-md">
+                    {/* Icon and Title */}
+                    <div className="flex items-start sm:items-center gap-4">
+                      <div className="w-12 h-12 rounded-none bg-zinc-950 border border-white/10 text-[#FFDE00] flex items-center justify-center shrink-0 group-hover:bg-[#FFDE00] group-hover:text-black group-hover:border-[#FFDE00] transition-all duration-300 shadow-lg">
+                        <Icon className="w-6 h-6 stroke-[2]" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-white uppercase font-display tracking-tight group-hover:text-[#FFDE00] transition-colors">
+                          {skillGroup.category}
+                        </h3>
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-xs sm:text-sm text-zinc-400 font-sans leading-relaxed font-light">
                       {skillGroup.description}
                     </p>
-
-                    <button
-                      type="button"
-                      aria-label={`Toggle ${skillGroup.category} details`}
-                      className={`w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-zinc-400 group-hover:border-[#FFDE00] group-hover:text-[#FFDE00] transition-all shrink-0 ${
-                        isOpen ? 'rotate-180 bg-[#FFDE00] text-black border-transparent' : ''
-                      }`}
-                    >
-                      <ChevronDown className="w-4 h-4" />
-                    </button>
                   </div>
 
-                </div>
-
-                {/* Expandable Deliverables Drawer */}
-                {isOpen && (
-                  <div className="mt-8 pt-6 border-t border-dashed border-white/10 pl-16 sm:pl-20 lg:pl-28 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 animate-in fade-in duration-300">
-                    {skillGroup.items.map((item, itemIdx) => (
-                      <div
-                        key={itemIdx}
-                        className="p-3.5 bg-zinc-950 border border-white/10 flex items-center gap-2.5 text-xs text-zinc-200 font-mono font-medium"
-                      >
-                        <span className="w-1.5 h-1.5 bg-[#FFDE00] shrink-0" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
+                  {/* Deliverables Chip Matrix */}
+                  <div className="pt-6 mt-6 border-t border-white/[0.08] space-y-3">
+                    <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest font-bold">
+                      PROVEN DELIVERABLES
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {skillGroup.items.map((item, itemIdx) => (
+                        <span
+                          key={itemIdx}
+                          className="px-3 py-1 bg-zinc-950 border border-white/10 text-zinc-300 text-[10px] sm:text-[11px] font-mono uppercase group-hover:border-[#FFDE00]/40 group-hover:text-white transition-all flex items-center gap-1.5"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#FFDE00]" />
+                          <span>{item}</span>
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                )}
-
+                </SpotlightCard>
               </div>
             );
           })}

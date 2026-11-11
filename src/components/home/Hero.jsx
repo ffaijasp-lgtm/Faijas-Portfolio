@@ -4,6 +4,9 @@ import { siteConfig } from '../../js/data/site';
 import { projects } from '../../js/data/project';
 import resumeFile from '../../assets/docs/Resume.pdf';
 import { ArrowUpRight, FileDown, Volume2, VolumeX, Sparkles, Film } from 'lucide-react';
+import SpotlightCard from '../ui/SpotlightCard';
+import MagneticButton from '../ui/MagneticButton';
+import DecryptedText from '../ui/DecryptedText';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -136,26 +139,30 @@ export default function Hero({ onOpenVideo }) {
 
           {/* CTA Action Row */}
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-            <Link
-              to="/projects"
-              data-cursor="explore"
-              className="hero-cta-btn inline-flex items-center gap-2 px-8 py-4 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 rounded-none shadow-xl shadow-[#FFDE00]/20 group active:scale-95"
-            >
-              <span>EXPLORE WORK ({projects.length})</span>
-              <ArrowUpRight className="w-4 h-4 stroke-[3] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </Link>
+            <MagneticButton strength={0.25}>
+              <Link
+                to="/projects"
+                data-cursor="explore"
+                className="hero-cta-btn inline-flex items-center gap-2 px-8 py-4 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 rounded-none shadow-xl shadow-[#FFDE00]/20 group active:scale-95"
+              >
+                <span>EXPLORE WORK ({projects.length})</span>
+                <ArrowUpRight className="w-4 h-4 stroke-[3] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+            </MagneticButton>
 
-            <a
-              href={resumeFile}
-              download="Faijas_P_Resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-cursor="pdf"
-              className="hero-cta-btn inline-flex items-center gap-2 px-8 py-4 bg-transparent hover:bg-white/[0.08] text-white font-display font-black text-xs sm:text-sm uppercase tracking-wider border border-white/20 hover:border-[#FFDE00] hover:text-[#FFDE00] transition-all duration-300 active:scale-95"
-            >
-              <FileDown className="w-4 h-4 text-[#FFDE00]" />
-              <span>GET RESUME</span>
-            </a>
+            <MagneticButton strength={0.25}>
+              <a
+                href={resumeFile}
+                download="Faijas_P_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-cursor="pdf"
+                className="hero-cta-btn inline-flex items-center gap-2 px-8 py-4 bg-transparent hover:bg-white/[0.08] text-white font-display font-black text-xs sm:text-sm uppercase tracking-wider border border-white/20 hover:border-[#FFDE00] hover:text-[#FFDE00] transition-all duration-300 active:scale-95"
+              >
+                <FileDown className="w-4 h-4 text-[#FFDE00]" />
+                <span>GET RESUME</span>
+              </a>
+            </MagneticButton>
           </div>
 
         </div>

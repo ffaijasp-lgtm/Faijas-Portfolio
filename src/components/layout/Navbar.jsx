@@ -89,10 +89,9 @@ export default function Navbar() {
           <Link
             to="/"
             onClick={() => setMobileMenuOpen(false)}
-            className="group flex items-center gap-3 text-white transition-opacity hover:opacity-90"
+            className="group flex items-center text-white transition-opacity hover:opacity-90"
             aria-label={`${siteConfig.name} — Portfolio Home`}
           >
-            <span className="w-2.5 h-2.5 bg-[#FFDE00] rounded-sm rotate-45 group-hover:rotate-90 transition-transform duration-300" />
             <div className="flex flex-col">
               <span className="font-display font-black text-sm sm:text-base tracking-tighter uppercase text-white group-hover:text-[#FFDE00] transition-colors leading-none">
                 {siteConfig.name}

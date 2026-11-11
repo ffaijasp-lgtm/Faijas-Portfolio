@@ -1,6 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import { siteConfig } from '../../js/data/site';
 import { Mail, Linkedin, Phone, MapPin, ArrowUpRight, Sparkles } from 'lucide-react';
+import SpotlightCard from '../ui/SpotlightCard';
+import DecryptedText from '../ui/DecryptedText';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -49,7 +51,9 @@ export default function ContactSection() {
         <div className="contact-reveal flex justify-between items-center text-[10px] font-mono uppercase tracking-widest text-zinc-400 mb-16 pb-4 border-b border-white/[0.08]">
           <div className="flex items-center gap-2">
             <Sparkles className="w-3.5 h-3.5 text-[#FFDE00]" />
-            <span className="text-white font-bold">(06 / CONNECT DIRECT)</span>
+            <span className="text-white font-bold">
+              <DecryptedText text="06 // CONNECT DIRECT" speed={30} />
+            </span>
           </div>
           <div className="hidden sm:flex items-center gap-6">
             <span>START A PROJECT</span>
@@ -73,31 +77,37 @@ export default function ContactSection() {
           </p>
         </div>
 
-        {/* Direct Contact Action Cards */}
+        {/* Direct Contact Action Cards with SpotlightCard from React Bits */}
         <div className="contact-reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           
           {/* Email Card */}
           <a
             href={siteConfig.links.email}
             data-cursor="email"
-            className="p-7 bg-[#0d0d0d] border border-white/10 hover:border-[#FFDE00] transition-all duration-300 group flex flex-col justify-between space-y-8 shadow-xl"
             aria-label={`Send email to ${siteConfig.email}`}
+            className="block group"
           >
-            <div className="flex items-center justify-between">
-              <div className="w-10 h-10 bg-black border border-white/10 text-[#FFDE00] flex items-center justify-center group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
-                <Mail className="w-5 h-5" />
+            <SpotlightCard
+              spotlightColor="rgba(255, 222, 0, 0.16)"
+              borderColor="rgba(255, 222, 0, 0.5)"
+              className="p-7 rounded-none h-full border border-white/10 hover:border-[#FFDE00] transition-all duration-300 flex flex-col justify-between space-y-8 shadow-xl"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 bg-black border border-white/10 text-[#FFDE00] flex items-center justify-center group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-[#FFDE00] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all stroke-[2.5]" />
               </div>
-              <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-[#FFDE00] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all stroke-[2.5]" />
-            </div>
 
-            <div>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1 font-bold">
-                EMAIL DIRECT
-              </span>
-              <span className="text-sm sm:text-base font-bold text-white group-hover:text-[#FFDE00] transition-colors break-all font-sans">
-                {siteConfig.email}
-              </span>
-            </div>
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1 font-bold">
+                  EMAIL DIRECT
+                </span>
+                <span className="text-sm sm:text-base font-bold text-white group-hover:text-[#FFDE00] transition-colors break-all font-sans">
+                  {siteConfig.email}
+                </span>
+              </div>
+            </SpotlightCard>
           </a>
 
           {/* LinkedIn Card */}
@@ -106,67 +116,85 @@ export default function ContactSection() {
             target="_blank"
             rel="noopener noreferrer"
             data-cursor="linkedin"
-            className="p-7 bg-[#0d0d0d] border border-white/10 hover:border-[#FFDE00] transition-all duration-300 group flex flex-col justify-between space-y-8 shadow-xl"
             aria-label="Connect with Faijas P on LinkedIn"
+            className="block group"
           >
-            <div className="flex items-center justify-between">
-              <div className="w-10 h-10 bg-black border border-white/10 text-[#FFDE00] flex items-center justify-center group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
-                <Linkedin className="w-5 h-5" />
+            <SpotlightCard
+              spotlightColor="rgba(255, 222, 0, 0.16)"
+              borderColor="rgba(255, 222, 0, 0.5)"
+              className="p-7 rounded-none h-full border border-white/10 hover:border-[#FFDE00] transition-all duration-300 flex flex-col justify-between space-y-8 shadow-xl"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 bg-black border border-white/10 text-[#FFDE00] flex items-center justify-center group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
+                  <Linkedin className="w-5 h-5" />
+                </div>
+                <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-[#FFDE00] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all stroke-[2.5]" />
               </div>
-              <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-[#FFDE00] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all stroke-[2.5]" />
-            </div>
 
-            <div>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1 font-bold">
-                NETWORKING
-              </span>
-              <span className="text-sm sm:text-base font-bold text-white group-hover:text-[#FFDE00] transition-colors font-sans">
-                LinkedIn Profile
-              </span>
-            </div>
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1 font-bold">
+                  NETWORKING
+                </span>
+                <span className="text-sm sm:text-base font-bold text-white group-hover:text-[#FFDE00] transition-colors font-sans">
+                  LinkedIn Profile
+                </span>
+              </div>
+            </SpotlightCard>
           </a>
 
           {/* Phone / Call Card */}
           <a
             href={siteConfig.links.phone}
             data-cursor="call"
-            className="p-7 bg-[#0d0d0d] border border-white/10 hover:border-[#FFDE00] transition-all duration-300 group flex flex-col justify-between space-y-8 shadow-xl"
             aria-label={`Call ${siteConfig.phone}`}
+            className="block group"
           >
-            <div className="flex items-center justify-between">
-              <div className="w-10 h-10 bg-black border border-white/10 text-[#FFDE00] flex items-center justify-center group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
-                <Phone className="w-5 h-5" />
+            <SpotlightCard
+              spotlightColor="rgba(255, 222, 0, 0.16)"
+              borderColor="rgba(255, 222, 0, 0.5)"
+              className="p-7 rounded-none h-full border border-white/10 hover:border-[#FFDE00] transition-all duration-300 flex flex-col justify-between space-y-8 shadow-xl"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 bg-black border border-white/10 text-[#FFDE00] flex items-center justify-center group-hover:bg-[#FFDE00] group-hover:text-black transition-colors">
+                  <Phone className="w-5 h-5" />
+                </div>
+                <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-[#FFDE00] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all stroke-[2.5]" />
               </div>
-              <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-[#FFDE00] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all stroke-[2.5]" />
-            </div>
 
-            <div>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1 font-bold">
-                TELEPHONE
-              </span>
-              <span className="text-sm sm:text-base font-bold text-white group-hover:text-[#FFDE00] transition-colors font-mono">
-                +91 {siteConfig.phone}
-              </span>
-            </div>
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1 font-bold">
+                  TELEPHONE
+                </span>
+                <span className="text-sm sm:text-base font-bold text-white group-hover:text-[#FFDE00] transition-colors font-mono">
+                  +91 {siteConfig.phone}
+                </span>
+              </div>
+            </SpotlightCard>
           </a>
 
           {/* Location Information Card */}
-          <div className="p-7 bg-[#0d0d0d] border border-white/10 flex flex-col justify-between space-y-8 shadow-xl">
-            <div className="flex items-center justify-between">
-              <div className="w-10 h-10 bg-black border border-white/10 text-[#FFDE00] flex items-center justify-center">
-                <MapPin className="w-5 h-5" />
+          <div className="block">
+            <SpotlightCard
+              spotlightColor="rgba(255, 222, 0, 0.16)"
+              borderColor="rgba(255, 222, 0, 0.5)"
+              className="p-7 rounded-none h-full border border-white/10 flex flex-col justify-between space-y-8 shadow-xl"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 bg-black border border-white/10 text-[#FFDE00] flex items-center justify-center">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
               </div>
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            </div>
 
-            <div>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1 font-bold">
-                LOCATION
-              </span>
-              <span className="text-sm sm:text-base font-bold text-white font-sans">
-                {siteConfig.location}
-              </span>
-            </div>
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1 font-bold">
+                  LOCATION
+                </span>
+                <span className="text-sm sm:text-base font-bold text-white font-sans">
+                  {siteConfig.location}
+                </span>
+              </div>
+            </SpotlightCard>
           </div>
 
         </div>
