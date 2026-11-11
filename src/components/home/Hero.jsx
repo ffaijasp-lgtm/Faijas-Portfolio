@@ -3,25 +3,38 @@ import { Link } from 'react-router-dom';
 import { siteConfig } from '../../js/data/site';
 import { projects } from '../../js/data/project';
 import resumeFile from '../../assets/docs/Resume.pdf';
-import { ArrowUpRight, FileDown, MapPin, Sparkles, Volume2, VolumeX } from 'lucide-react';
+import { ArrowUpRight, FileDown, Volume2, VolumeX } from 'lucide-react';
 import gsap from 'gsap';
 
 export default function Hero({ onOpenVideo }) {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
-  const featuredVideoProject = projects[0];
   const [isMuted, setIsMuted] = useState(true);
 
-  // High quality sample public MP4 showcase reel
-  // To use your local video, place it in src/assets/video/ and import it or point to it here
-  const videoSrc = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+  // Dedicated hero showcase video data (independent from projects array)
+  // You can point to a file in src/assets/video/ or any public/Cloudinary video link
+  const showcaseVideo = siteConfig.heroVideo || {
+    title: "AI Video Concepts & Promotional Reel",
+    description: "Short-form promotional video showcase created using generative AI visual workflows and motion editing.",
+    category: "AI Video Direction",
+    src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    youtubeId: "LXb3EKWsInQ",
+    tools: ["AI Visuals", "CapCut", "Motion Editing", "Prompt Direction"]
+  };
 
-  const toggleSound = () => {
+  const toggleSound = (e) => {
+    e.stopPropagation();
     if (videoRef.current) {
       videoRef.current.muted = !videoRef.current.muted;
       setIsMuted(videoRef.current.muted);
     } else {
       setIsMuted(!isMuted);
+    }
+  };
+
+  const handleOpenShowcase = () => {
+    if (onOpenVideo) {
+      onOpenVideo(showcaseVideo);
     }
   };
 
@@ -106,80 +119,52 @@ export default function Hero({ onOpenVideo }) {
 
         </div>
 
-        <div className="hero-visual-card relative rounded-none p-2 sm:p-4 bg-zinc-950 border-2 border-zinc-800">
+        {/* Video Reel Frame */}
+        <div className="hero-visual-card relative rounded-none p-2 sm:p-3 bg-zinc-950 border-2 border-[#FFDE00]/40 hover:border-[#FFDE00] transition-colors duration-300">
           
-          <div className="flex items-center justify-between px-3 py-2 border-b border-zinc-800 text-[10px] font-mono text-zinc-400 uppercase tracking-widest mb-3 gap-2">
-            <div className="flex items-center gap-1.5 shrink-0">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-              <span className="text-white font-bold">FEATURED WORK SHOWCASE</span>
-            </div>
-            <div className="hidden sm:block truncate text-center">AI VISUALS &bull; MOTION DIRECTION &bull; CAMPAIGN</div>
-            <div className="flex items-center gap-3 shrink-0">
+          <div 
+            onClick={handleOpenShowcase}
+            className="relative aspect-[16/10] sm:aspect-[21/9] overflow-hidden bg-black border border-zinc-800 group cursor-pointer"
+          >
+            {/* HTML5 Native Video: Autoplay, loop, muted, no default controls in unclicked state */}
+            <video
+              ref={videoRef}
+              src={showcaseVideo.src}
+              autoPlay
+              muted={isMuted}
+              loop
+              playsInline
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+            />
+            
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
+
+            {/* Floating Sound Toggle inside the frame */}
+            <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 pointer-events-auto">
               <button
                 type="button"
                 onClick={toggleSound}
-                className="flex items-center gap-1 text-zinc-300 hover:text-[#FFDE00] transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-black/85 hover:bg-[#FFDE00] text-zinc-300 hover:text-black border border-[#FFDE00]/40 transition-all font-mono text-[10px] uppercase font-bold tracking-wider backdrop-blur-sm"
                 aria-label={isMuted ? "Unmute video" : "Mute video"}
               >
-                {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-[#FFDE00]" />}
-                <span className="text-[10px] font-mono">{isMuted ? "MUTED" : "SOUND ON"}</span>
+                {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-[#FFDE00] group-hover:text-black" />}
+                <span>{isMuted ? "MUTED" : "SOUND ON"}</span>
               </button>
             </div>
-          </div>
 
-          <div 
-            onClick={() => onOpenVideo && onOpenVideo(featuredVideoProject)}
-            className="relative aspect-[16/10] sm:aspect-[21/9] overflow-hidden bg-black border border-zinc-800 group cursor-pointer"
-          >
-            {/* HTML5 Native Video Stream: Smooth autoplay, loop, hidden native controls, muted */}
-            <video
-              ref={videoRef}
-              src={videoSrc}
-              poster={featuredVideoProject.thumbnail}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-full object-cover"
-            />
-            
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
-
-            <div className="absolute bottom-3 left-3 right-3 sm:bottom-5 sm:left-5 sm:right-5 flex flex-col sm:flex-row sm:items-end justify-between gap-3 pointer-events-auto">
-              <div className="space-y-0.5 max-w-md">
-                <span className="text-[9px] sm:text-[10px] font-mono tracking-widest text-[#FFDE00] uppercase font-bold block">
-                  FEATURED WORK REEL
-                </span>
-                <h3 className="text-white font-display font-black text-sm sm:text-xl md:text-2xl uppercase tracking-tight line-clamp-2 sm:line-clamp-none">
-                  {featuredVideoProject.title}
-                </h3>
-              </div>
-              
+            {/* Bottom action bar */}
+            <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-20 pointer-events-auto">
               <button 
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onOpenVideo && onOpenVideo(featuredVideoProject);
+                  handleOpenShowcase();
                 }}
-                className="self-start sm:self-auto px-4 py-2 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-[11px] sm:text-xs uppercase tracking-wider flex items-center gap-1.5 transition-transform group-hover:scale-105 shadow-xl shrink-0"
+                className="px-4 py-2 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-[11px] sm:text-xs uppercase tracking-wider flex items-center gap-1.5 transition-transform group-hover:scale-105 shadow-xl"
               >
                 <span>EXPAND VIEW</span>
                 <ArrowUpRight className="w-4 h-4 stroke-[3]" />
               </button>
-            </div>
-          </div>
-
-          <div className="mt-3 pt-2 border-t border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center justify-between text-[11px] font-mono text-zinc-400 gap-2 sm:gap-4">
-            <div className="flex items-center gap-2">
-              <MapPin className="w-3.5 h-3.5 text-[#FFDE00] shrink-0" />
-              <span>{siteConfig.location}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#FFDE00] shrink-0" />
-              <span>AI Video &amp; Image Creation</span>
-            </div>
-            <div className="text-white font-bold">
-              <span>META ADS &bull; GOOGLE ADS &bull; SEO</span>
             </div>
           </div>
 

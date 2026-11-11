@@ -63,6 +63,14 @@ export default function VideoModal({ video, onClose }) {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
             />
+          ) : video.src ? (
+            <video
+              src={video.src}
+              controls
+              autoPlay
+              playsInline
+              className="w-full h-full object-contain"
+            />
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 p-8 text-center space-y-2">
               <span className="text-sm font-mono uppercase text-[#FFDE00]">

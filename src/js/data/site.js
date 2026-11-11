@@ -21,6 +21,17 @@ export const siteConfig = {
 
   summary: "Digital Marketing and AI Content Creator with hands-on experience in social media content, SEO, AI image and video creation, and visual content production. Skilled in Meta Ads, Google Ads, WordPress, Canva, Photoshop, and CapCut. Focused on creating engaging promotional content and marketing creatives for online campaigns.",
 
+  heroVideo: {
+    title: "AI Video Concepts & Promotional Reel",
+    description: "Short-form promotional video showcase created using generative AI visual workflows and motion editing.",
+    category: "AI Video Direction",
+    // Can be an imported local video from assets/video/, an external MP4 URL, or a Cloudinary URL
+    src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    // Optional YouTube ID if you prefer streaming via YouTube when expanded:
+    youtubeId: "LXb3EKWsInQ",
+    tools: ["AI Visuals", "CapCut", "Motion Editing", "Prompt Direction"]
+  },
+
   skills: [
     {
       category: "Digital Marketing",
