@@ -84,22 +84,12 @@ export default function VideoModal({ video, onClose }) {
           )}
         </div>
 
-        <div className="p-4 sm:p-5 bg-zinc-950 border-t border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+        <div className="p-4 sm:p-5 bg-zinc-950 border-t border-zinc-800 flex items-center justify-between gap-3 text-xs">
           <div>
             <span className="px-2.5 py-0.5 bg-[#FFDE00] text-black font-display font-black text-[10px] uppercase mr-2">
               {video.category}
             </span>
             <span className="text-zinc-400 font-sans">{video.description}</span>
-          </div>
-          <div className="flex flex-wrap gap-1.5 shrink-0">
-            {video.tools?.map((tool, idx) => (
-              <span
-                key={idx}
-                className="text-[10px] font-mono px-2 py-0.5 bg-zinc-900 text-zinc-400 border border-zinc-800 uppercase"
-              >
-                {tool}
-              </span>
-            ))}
           </div>
         </div>
       </div>

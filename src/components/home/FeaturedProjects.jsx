@@ -121,15 +121,10 @@ export default function FeaturedProjects({ onOpenVideo }) {
               </div>
 
               <div className="p-6 sm:p-8 pt-0 border-t border-zinc-900 mt-4 flex items-center justify-between">
-                <div className="flex flex-wrap gap-1.5">
-                  {project.tools.map((tool, tIdx) => (
-                    <span 
-                      key={tIdx}
-                      className="text-[10px] font-mono px-2 py-0.5 bg-zinc-900 text-zinc-400 border border-zinc-800 uppercase"
-                    >
-                      {tool}
-                    </span>
-                  ))}
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#FFDE00] font-bold">
+                    {project.category}
+                  </span>
                 </div>
 
                 {project.youtubeId ? (
