@@ -104,15 +104,10 @@ export default function ProjectCard({ project, onOpenVideo }) {
         </div>
 
         <div className="p-6 sm:p-7 pt-0 border-t border-white/[0.06] mt-4 flex items-center justify-between">
-          <div className="flex flex-wrap gap-1.5">
-            {project.tools?.map((tool, idx) => (
-              <span
-                key={idx}
-                className="text-[10px] font-mono px-2 py-0.5 bg-zinc-950 text-zinc-400 border border-zinc-800 uppercase"
-              >
-                {tool}
-              </span>
-            ))}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest font-bold">
+              {project.category}
+            </span>
           </div>
 
           {project.youtubeId ? (
@@ -120,7 +115,7 @@ export default function ProjectCard({ project, onOpenVideo }) {
               <button
                 type="button"
                 onClick={() => onOpenVideo(project)}
-                className="px-3.5 py-1.5 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-[10px] uppercase tracking-wider flex items-center gap-1.5 transition-colors shrink-0 ml-3 active:scale-95"
+                className="px-4 py-2 bg-[#FFDE00] hover:bg-[#FFE838] text-black font-display font-black text-[10px] uppercase tracking-wider flex items-center gap-1.5 transition-colors shrink-0 ml-3 active:scale-95 shadow-md"
               >
                 <span>STREAM</span>
                 <Play className="w-3 h-3 fill-current" />

@@ -361,16 +361,16 @@ export default function SelectedWorksStack({ onOpenVideo }) {
                       {project.description}
                     </p>
 
-                    <div className="pt-2.5 sm:pt-3 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-3">
-                      <div className="flex flex-wrap gap-1.5">
-                        {project.tools?.map((tool, tIdx) => (
-                          <span
-                            key={tIdx}
-                            className="px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-mono uppercase bg-zinc-950 text-zinc-300 border border-zinc-800"
-                          >
-                            {tool}
+                    <div className="pt-2.5 sm:pt-3 border-t border-white/[0.08] flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-[#FFDE00] font-bold">
+                          {project.category}
+                        </span>
+                        {project.projectType && (
+                          <span className="text-[10px] font-mono text-zinc-500 hidden sm:inline">
+                            &bull; {project.projectType}
                           </span>
-                        ))}
+                        )}
                       </div>
 
                       {project.youtubeId && (

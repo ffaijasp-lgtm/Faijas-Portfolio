@@ -28,8 +28,7 @@ export const siteConfig = {
     // Can be an imported local video from assets/video/, an external MP4 URL, or a Cloudinary URL
     src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
     // Optional YouTube ID if you prefer streaming via YouTube when expanded:
-    youtubeId: "LXb3EKWsInQ",
-    tools: ["AI Visuals", "CapCut", "Motion Editing", "Prompt Direction"]
+    youtubeId: "LXb3EKWsInQ"
   },
 
   skills: [
