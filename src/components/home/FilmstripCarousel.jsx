@@ -18,7 +18,6 @@ export default function FilmstripCarousel({ onOpenVideo }) {
         src: video.fullSrc || video.src,
         youtubeId: null,
         description: "Archival footage running on continuous 35mm film reel.",
-        tools: ["35mm Film", "Analog Archive", "Silent Cinema"]
       });
     }
   };
@@ -44,14 +43,14 @@ export default function FilmstripCarousel({ onOpenVideo }) {
         <span className="w-2.5 h-1.5 sm:w-3 sm:h-2 rounded-[1.5px] bg-[#050505] border border-white/20 shadow-inner" />
         <span className="w-2.5 h-1.5 sm:w-3 sm:h-2 rounded-[1.5px] bg-[#050505] border border-white/20 shadow-inner" />
         <span className="text-[8px] sm:text-[9px] font-mono tracking-widest text-zinc-500 uppercase ml-1.5 hidden xs:inline">
-          {isBottom ? 'EASTMAN &bull; 500T' : '35MM FILM'}
+          {isBottom ? 'EASTMAN • 500T' : '35MM FILM'}
         </span>
       </div>
 
       {/* Center Film Calibration Notch */}
       <div className="flex items-center gap-1 text-[8px] sm:text-[9px] font-mono tracking-widest text-zinc-500 uppercase">
         <span className="text-[#FFDE00] font-bold">{frameCode}</span>
-        <span className="text-zinc-600">&bull;</span>
+        <span className="text-zinc-600">•</span>
         <span className="text-zinc-400">{isBottom ? 'SAFETY FILM' : 'KODAK 5219'}</span>
       </div>
 
@@ -65,26 +64,26 @@ export default function FilmstripCarousel({ onOpenVideo }) {
   );
 
   return (
-    <div className="w-full relative py-6 sm:py-10 select-none overflow-hidden">
+    <div className="w-full relative py-4 sm:py-8 select-none overflow-hidden">
       {/* Filmstrip Header Status Line */}
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 mb-3 sm:mb-5 flex items-center justify-between text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 mb-3 sm:mb-4 flex items-center justify-between text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
         <div className="flex items-center gap-2">
           <Film className="w-3.5 h-3.5 text-[#FFDE00]" />
           <span className="text-white font-bold">35MM CONTINUOUS FILM REEL</span>
-          <span className="text-zinc-600 hidden sm:inline">&bull;</span>
-          <span className="text-[#FFDE00] hidden sm:inline">AUTOPLAY [B/W] &bull; HOVER FOR COLOR</span>
+          <span className="text-zinc-600 hidden sm:inline">•</span>
+          <span className="text-[#FFDE00] hidden sm:inline">AUTOPLAY [B/W] • HOVER FOR COLOR</span>
         </div>
         <div className="hidden sm:flex items-center gap-3 text-zinc-400">
           <span>8 FILM CELLS</span>
-          <span>&bull;</span>
+          <span>•</span>
           <span className="text-white">CLICK ANY CELL TO EXPAND ↗</span>
         </div>
       </div>
 
-      {/* 100% Full-Width Bleed Viewport Container */}
+      {/* 100% Edge-to-Edge Viewport Container (Spans 100% of the entire screen) */}
       <div
         ref={containerRef}
-        className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden bg-[#050505] border-y border-white/10 py-3 sm:py-4"
+        className="w-full relative overflow-hidden bg-[#050505] border-y border-white/10 py-3 sm:py-4"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => {
           setIsPaused(false);
@@ -92,13 +91,13 @@ export default function FilmstripCarousel({ onOpenVideo }) {
         }}
       >
         {/* Left Side Theatrical Smoke Fade Vignette */}
-        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 sm:w-44 md:w-72 z-30 bg-gradient-to-r from-[#070707] via-[#070707]/90 to-transparent">
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-48 h-48 bg-[#FFDE00]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-28 md:w-44 lg:w-56 z-30 bg-gradient-to-r from-[#070707] via-[#070707]/80 to-transparent flex items-center">
+          <div className="w-24 sm:w-36 h-3/4 bg-[#FFDE00]/[0.03] rounded-full blur-2xl pointer-events-none" />
         </div>
 
         {/* Right Side Theatrical Smoke Fade Vignette */}
-        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 sm:w-44 md:w-72 z-30 bg-gradient-to-l from-[#070707] via-[#070707]/90 to-transparent">
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-48 h-48 bg-[#FFDE00]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-28 md:w-44 lg:w-56 z-30 bg-gradient-to-l from-[#070707] via-[#070707]/80 to-transparent flex items-center justify-end">
+          <div className="w-24 sm:w-36 h-3/4 bg-[#FFDE00]/[0.03] rounded-full blur-2xl pointer-events-none" />
         </div>
 
         {/* Seamless Infinite Rolling Track */}
@@ -126,11 +125,23 @@ export default function FilmstripCarousel({ onOpenVideo }) {
                 {/* 2. Pure Cinema Video Frame (No buttons, no descriptions) */}
                 <div className="relative aspect-[16/9] w-full overflow-hidden bg-black">
                   <video
+                    ref={(el) => {
+                      if (el) {
+                        el.defaultMuted = true;
+                        el.muted = true;
+                        const p = el.play();
+                        if (p !== undefined) {
+                          p.catch(() => {});
+                        }
+                      }
+                    }}
                     src={video.src}
+                    poster={video.poster}
                     autoPlay
                     muted
                     loop
                     playsInline
+                    preload="auto"
                     className={`w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105 ${
                       isHoveredOrActive
                         ? 'grayscale-0 contrast-100 brightness-105'

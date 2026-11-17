@@ -125,12 +125,13 @@ export default function Hero({ onOpenVideo }) {
 
         </div>
 
-        {/* 100% Edge-to-Edge 35mm Continuous Filmstrip Reel */}
-        <div className="hero-showcase-container mt-10 sm:mt-14 w-full">
-          <FilmstripCarousel onOpenVideo={onOpenVideo} />
-        </div>
-
       </div>
+
+      {/* 100% True Edge-to-Edge 35mm Continuous Filmstrip Reel (Spanning full viewport width) */}
+      <div className="hero-showcase-container mt-12 sm:mt-16 w-full relative z-20">
+        <FilmstripCarousel onOpenVideo={onOpenVideo} />
+      </div>
+
     </section>
   );
 }
